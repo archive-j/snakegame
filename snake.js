@@ -265,8 +265,8 @@ btnStartgame.addEventListener ("click", function() {
 
   if(validateInput(inputs)) {
      game = new Game(gameData, canvas, 2, [87, 65, 83, 68]); //WASD
-     game.generateApple();
      gameIsRunning = game.isRunning;
+     game.generateApple();
      document.addEventListener('keydown', function(e) {
          game.keyPushFunc(e);
        });
