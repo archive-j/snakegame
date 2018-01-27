@@ -38,8 +38,8 @@ function gameRun() {
 
 function Game(setupData, i_canvas, startLength, ctrl) {
   localStorage.setItem('gameData', JSON.stringify(setupData));
-  gameIsRunning = true;
 
+  this.isRunning = true;
   console.log("setupData", setupData);
 
   this.canvas = i_canvas;
@@ -266,6 +266,7 @@ btnStartgame.addEventListener ("click", function() {
   if(validateInput(inputs)) {
      game = new Game(gameData, canvas, 2, [87, 65, 83, 68]); //WASD
      game.generateApple();
+     gameIsRunning = game.isRunning;
      document.addEventListener('keydown', function(e) {
          game.keyPushFunc(e);
        });
