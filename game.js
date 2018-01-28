@@ -28,7 +28,7 @@ function Game(setupData, i_canvas, startLength, ctrl) {
   this.nextVx = 1;
   this.nextVy = 0;
   this.trail = [];
-  this.fps = 3;// frame per second
+  this.fps = 9;// frame per second
   this.score =  0;
 
   this.map = new Array(this.sizeX).fill().map(()=>new Array(this.sizeY).fill("empty"));

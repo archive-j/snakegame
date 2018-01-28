@@ -28,6 +28,27 @@ function GameUI() {
     let inputPlayersName = document.getElementById('inputPlayersName');
     let inputUnit = document.getElementById('inputUnit');
 
+
+
+    var outputU = document.getElementById("valueU");
+    var outputW = document.getElementById("valueW");
+    var outputH = document.getElementById("valueH");
+
+    outputU.innerHTML = inputUnit.value; // Display the default slider value
+    outputW.innerHTML = inputHeight.value; // Display the default slider value
+    outputH.innerHTML = inputWidth.value; // Display the default slider value
+
+    // Update the current slider value (each time you drag the slider handle)
+    inputUnit.oninput = function() {
+        outputU.innerHTML = this.value;
+    };
+    inputWidth.oninput = function() {
+        outputW.innerHTML = this.value;
+    };
+    inputHeight.oninput = function() {
+        outputH.innerHTML = this.value;
+    };
+
     this.gameStartData;
     this.gameIsRunning = false;
     //ADD EVENT LISTENERS FOR BUTTONS
