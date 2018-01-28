@@ -24,3 +24,10 @@ function toggleVisiblity(div) {
     div.visible = true;
   }
 }
+
+function removeElement(array, element){
+  var index = array.indexOf(element);
+  if (index > -1){
+    array.splice(index,1);
+  }
+}

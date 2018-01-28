@@ -185,3 +185,15 @@ canvas {
 input:invalid, input:placeholder-shown {
 	box-shadow: 0 0 50px 1px red;
 }
+
+#debug {
+	position: absolute;
+	float: left;
+	padding: 10px;
+	border: 1px solid black;
+	border-radius: 2px;
+	background-color: gray;
+	font-size: 1em;
+	width: 300px;
+	height: 200px;
+}

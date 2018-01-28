@@ -11,7 +11,7 @@ var inputWidth;
 var inputHeight;
 var inputPlayersName;
 var inputUnit;
-var fps = 20;// frame per second
+var fps = 5;// frame per second
 //Snake positions, speed, food position
 var intervalID;
 var game;
@@ -67,49 +67,170 @@ function Game(setupData, i_canvas, startLength, ctrl) {
   this.nextVx = 1;
   this.nextVy = 0;
   this.trail = [];
-  this.fx = null;
-  this.fy = null;
   this.map = new Array(this.sizeX).fill().map(()=>new Array(this.sizeY).fill("empty"));
   this.score =  0;
-
-
+  this.ctrlQueue = [];
+  this.ctrlQueValid = [];
+  this.currentDir = null;
     //snake2 = new MySnake(sizeX, sizeY, 2, [38, 37, 12, 39]); //arrows
     //document.addEventListener('keydown', snake2.keyPushFunc.bind(snake2)); // fgv referencia-t vár
     // document.addEventListener('keydown', function(e) {
     //   snake.keyPushFunc(e);
 
 
-  this.keyPushFunc = function(evt) {
+  this.keyUpFunc = function(evt) {
+    switch (evt.keyCode) {
+      case this.ctrl[1]:
+        // this.nextVx = -1; //  LEFT
+        // this.nextVy = 0;
+        if (this.ctrlQueue.includes("LEFT")) {
+          removeElement(this.ctrlQueue,"LEFT");
+        }
+
+        break;
+      case this.ctrl[0]:
+        // this.nextVx = 0; // UP
+        // this.nextVy = -1;
+        if (this.ctrlQueue.includes("UP")) {
+          removeElement(this.ctrlQueue,"UP");
+        }
+        break;
+      case this.ctrl[3]:
+        // this.nextVx = 1; // RIGHT
+        // this.nextVy = 0;
+        if (this.ctrlQueue.includes("RIGHT")) {
+          removeElement(this.ctrlQueue,"RIGHT");
+        }
+        break;
+      case this.ctrl[2]:
+        // this.nextVx = 0; // DOWN
+        // this.nextVy = 1;
+        if (this.ctrlQueue.includes("DOWN")) {
+          removeElement(this.ctrlQueue,"DOWN");
+        }
+        break;
+    }
+
+  //  console.log("ctrlQue", this.ctrlQueue);
+  };
+
+  this.keyDownFunc = function(evt) {
   //  l("this:", this);
   //  l("Pushed keycode", evt.keyCode);
     switch (evt.keyCode) {
+      case this.ctrl[0]:
+
+        if (!this.ctrlQueue.includes("UP")) {
+          this.ctrlQueue.push("UP");
+        }
+
+        this.nextVx = 0; // UP
+        this.nextVy = -1;
+
+        break;
       case this.ctrl[1]:
+
+        if (!this.ctrlQueue.includes("LEFT")) {
+          this.ctrlQueue.push("LEFT");
+        }
+
         this.nextVx = -1; //  LEFT
         this.nextVy = 0;
         break;
-      case this.ctrl[0]:
-        this.nextVx = 0; // UP
-        this.nextVy = -1;
-        break;
-      case this.ctrl[3]:
-        this.nextVx = 1; // RIGHT
-        this.nextVy = 0;
-        break;
+
       case this.ctrl[2]:
+
+        if (!this.ctrlQueue.includes("DOWN")) {
+          this.ctrlQueue.push("DOWN");
+        }
         this.nextVx = 0; // DOWN
         this.nextVy = 1;
         break;
-	  }
+      case this.ctrl[3]:
+
+        if (!this.ctrlQueue.includes("RIGHT")) {
+          this.ctrlQueue.push("RIGHT");
+        }
+
+        this.nextVx = 1; // RIGHT
+        this.nextVy = 0;
+        break;
+      }
+
+//    console.log("ctrlQue", this.ctrlQueue);
+  };
+
+  this.getCurrentDir = function() {
+    if (this.vx === 0 && this.vy === -1 ){
+      this.currentDir = "UP";
+    }
+    if (this.vx === -1 && this.vy === 0 ){
+      this.currentDir = "LEFT";
+    }
+    if (this.vx === 0 && this.vy === 1 ){
+      this.currentDir = "DOWN";
+    }
+    if (this.vx === 1 && this.vy === 0 ){
+      this.currentDir = "RIGHT";
+    }
+  };
+
+  this.getVectorDir = function(dir) {
+    switch (dir) {
+      case "UP":
+        return {x: 0,y: -1};
+        break;
+      case "LEFT":
+        return {x: -1,y: 0};
+        break;
+      case "DOWN":
+        return {x: 0,y: 1};
+        break;
+      case "RIGHT":
+        return {x: 1,y: 0};
+        break;
+      default:
+        return {x: null, y: null};
+    }
+  };
+
+  this.validateDir = function() {
+    this.ctrlQueValid = [];
+    for(var i = 0; i < this.ctrlQueue.length; i++) {
+      this.ctrlQueValid[i] = this.ctrlQueue[i];
+    }
+    console.log("validbefore",this.ctrlQueValid);
+  //  console.log("vectorx",this.getVectorDir(this.currentDir).vectorX);
+    for(var i = 0; i < this.ctrlQueue.length; i++) {
+      var vector = this.getVectorDir(this.ctrlQueue[i]);
+      if((this.vx === (-1*vector.x) && this.vy === 0) || (this.vy === (-1*vector.y) && this.vx === 0)){
+
+        console.log("this.vx", this.vx, "vector.x",(-1*vector.x));
+        console.log("this.vy", this.vy, "vector.y",(-1*vector.y));
+        console.log("Remove");
+        removeElement(this.ctrlQueValid, this.ctrlQueue[i]);
+        console.log("this.ctrlQueValid", this.ctrlQueValid, "i", i);
+      }
+    }
+
   };
 
   this.moveSnake = function() {
 
+    this.validateDir();
+    
     //Constrain to move the opposite direction
     if (this.vx != (-1*this.nextVx) || this.vy != (-1*this.nextVy) ) {
       this.vx = this.nextVx;
       //  l(this.nextVx);
       this.vy = this.nextVy;
     }
+    this.getCurrentDir();
+    //Get current status
+  //  console.log("current vector",(this.getVectorDir(this.currentDir)).x);
+
+    document.getElementById("debug").innerHTML = "CtrlQ: "+ this.ctrlQueue + "<br>CtrlQ_Valid: "+ this.ctrlQueValid +"<br>Currentdir: " + this.currentDir;
+
     // increment position by speed
     this.px += this.vx;
     this.py += this.vy;
@@ -212,7 +333,7 @@ function Game(setupData, i_canvas, startLength, ctrl) {
 }
 
 window.onload = function() {
-  document.addEventListener ('keydown', interfaceCtrl);
+  document.addEventListener ('keypress', interfaceCtrl);
 };
 
 stateMachine ("mainMenuScreen");
@@ -268,7 +389,10 @@ btnStartgame.addEventListener ("click", function() {
      gameIsRunning = game.isRunning;
      game.generateApple();
      document.addEventListener('keydown', function(e) {
-         game.keyPushFunc(e);
+         game.keyDownFunc(e);
+       });
+     document.addEventListener('keyup', function(e) {
+         game.keyUpFunc(e);
        });
      stateMachine ("gameIsRunning");
 
