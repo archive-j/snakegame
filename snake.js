@@ -1,4 +1,7 @@
 
+
+//flag leütés felengedés törlés
+
 var menuMain = document.getElementById ('menu');
 var scoreDiv = document.getElementById ('score');
 var debugDiv = document.getElementById("debug");
@@ -78,7 +81,7 @@ function GameUI() {
           //console.log("localStorage.getItem('gameStartData') !== undefined",localStorage.getItem("gameStartData") !== undefined);
           if (localStorage.getItem("gameStartData") !== undefined){
           	this.gameStartData = localStorage.getItem('gameStartData');
-            console.log("localStorage.getItem('gameStartData')",localStorage.getItem('gameStartData'));
+            console.log("localStorage.getItem('gameStartData')", localStorage.getItem('gameStartData'));
       //      console.log("this.gameStartData" , this.gameStartData);
           	this.gameStartData = JSON.parse(this.gameStartData);
           	//console.log('gameStartData= : ', this.gameStartData);
@@ -151,6 +154,7 @@ function GameUI() {
           'mapUnit': parseInt(inputUnit.value),
         };
          this.game = new Game(this.gameStartData, canvas, 2, [87, 65, 83, 68]); //WASD
+         console.log("this.game",this.game);
          this.gameIsRunning = this.game.isRunning;
          this.game.generateFood();
          document.addEventListener('keydown', function(e) {
