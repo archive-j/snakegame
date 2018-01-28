@@ -349,8 +349,7 @@ function Game(setupData, i_canvas, startLength, ctrl) {
         }
 
         if (this.map[x][y] == "food")  {
-          this.cxt.fillStyle = "rgba(170,0,0,1)";
-          this.cxt.fillRect (x * this.unit, y * this.unit, this.unit, this.unit);
+          drawPixel(x, y, "rgba(170,0,0,1)", this.unit);
         }
       }
     }
@@ -399,17 +398,16 @@ function interfaceCtrl(evt) {
 }
 
 
-// function drawCircle (posX, posY, color, size, offset) {
-//   if (typeof offset === 'undefined' || !offset) {
-//     var offset = 0;
-//   }
-//   context = canvas.getContext ("2d");
-//   context.fillStyle = color;
-//   context.beginPath();
-//   context.arc(posX, posY, size/2, 0, Math.PI*2, true);
-//   context.closePath();
-//   context.fill();
-//   }
+ function drawCircle(posX, posY, color, size, offset) {
+  if (typeof offset === 'undefined' || !offset) {
+    var offset = 0;
+  }
+  cxt.fillStyle = color;
+  cxt.beginPath();
+  cxt.arc(posX * size + size/2 + offset, posY * size + size/2 + offset,  size/2 - 2 * offset, 0, Math.PI*2, true);
+  cxt.closePath();
+  cxt.fill();
+  }
 
 // drawPixel(10,10, "black", unit);
 
