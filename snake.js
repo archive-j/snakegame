@@ -4,8 +4,9 @@ var menuMain = document.getElementById ('menu');
 var scoreDiv = document.getElementById ('score');
 var newGameBtn = menu.children[0];
 var continueBtn = menu.children[2];
+var btnStartgame = document.getElementById ('btn-startgame');
 var backBtn = document.getElementById ('btn-back');
-
+var debugDiv = document.getElementById("debug");
 
 var inputWidth;
 var inputHeight;
@@ -13,7 +14,7 @@ var inputPlayersName;
 var inputUnit;
 var fps = 3;// frame per second
 //Snake positions, speed, food position
-var intervalID;
+var gameSessionId;
 var game;
 var gameData;
 var snake, snake2;
@@ -29,35 +30,81 @@ var gameIsRunning = false;
 //   szam1: 5
 // };
 
-function gameRun() {
+setup();
+
+function setup() {
+  window.onload = function() {
+    document.addEventListener ('keypress', interfaceCtrl);
+
+    newGameBtn.addEventListener ("click", function() { // új játék beállításai
+      stateMachine ("newGameCreatinMenu");
+    });
+
+    continueBtn.addEventListener ("click", function() {
+      if (gameIsRunning){
+        stateMachine ("gameIsRunning");
+      }
+    });
+
+    backBtn.addEventListener ("click", function() {
+      stateMachine ("mainMenuScreen");
+    });
+
+    btnStartgame.addEventListener ("click", function() {
+      var inputs = [inputWidth, inputHeight, inputUnit];
+
+      gameData = {
+        'name': inputPlayersName.value,
+        'mapWidth': parseInt(inputWidth.value),
+        'mapHeight': parseInt(inputHeight.value),
+        'mapUnit': parseInt(inputUnit.value),
+      };
+
+      if(validateInput(inputs)) {
+         game = new Game(gameData, canvas, 2, [87, 65, 83, 68]); //WASD
+         gameIsRunning = game.isRunning;
+         game.generateFood();
+         document.addEventListener('keydown', function(e) {
+             game.keyDownFunc(e);
+           });
+         document.addEventListener('keyup', function(e) {
+             game.keyUpFunc(e);
+           });
+         stateMachine ("gameIsRunning");
+
+      }
+    });
+
+
+  };
+  stateMachine ("mainMenuScreen");
+
+}
+
+
+function runGame() {
   game.clear();
   game.moveSnake();
   game.drawBoard();
 }
 
-
 function Game(setupData, i_canvas, startLength, ctrl) {
-  localStorage.setItem('gameData', JSON.stringify(setupData));
-
   this.isRunning = true;
-  console.log("setupData", setupData);
+
+  //Save to the local storage
+  localStorage.setItem('gameData', JSON.stringify(setupData));
+  console.log("GameSetupSavedToTheLocalStorage", setupData);
 
   this.canvas = i_canvas;
   this.cxt = this.canvas.getContext ("2d");
 
-  this.snkLength = startLength; //
   this.ctrl = ctrl;
+  this.snkLength = startLength;
 
-  // setupData = {
-  //   'name': inputPlayersName.value,
-  //   'mapWidth': inputWidth.value,
-  //   'mapHeight': inputHeight.value,
-  //   'mapUnit': inputUnit.value,
-  // };
-  console.log("setupData.mapWidth",typeof(setupData.mapWidth));
+  //console.log("setupData.mapWidth",typeof(setupData.mapWidth));
   this.sizeX = setupData.mapWidth;
-  this.sizeY = parseInt(inputHeight.value);
-  this.unit = parseInt(inputUnit.value);
+  this.sizeY = setupData.mapHeight;
+  this.unit = setupData.mapUnit;
   this.canvas.width = this.sizeX * this.unit; // a pálya méretének beállítása
   this.canvas.height = this.sizeY * this.unit;
   this.px =  getRandomInt(this.sizeX); //snake on the middle
@@ -232,7 +279,7 @@ function Game(setupData, i_canvas, startLength, ctrl) {
   };
 
   this.moveSnake = function() {
-     document.getElementById("debug").innerHTML = "CtrlQ: "+ this.ctrlQueue + "<br>CtrlQ_Valid: "+ this.ctrlQueValid +"<br>Currentdir: " + this.currentDir;
+     debugDiv.innerHTML = "CtrlQ: "+ this.ctrlQueue + "<br>CtrlQ_Valid: "+ this.ctrlQueValid +"<br>Currentdir: " + this.currentDir;
   //Constrain to move the opposite direction
     if (this.vx != (-1*this.nextVx) || this.vy != (-1*this.nextVy) ) {
       this.vx = this.nextVx;
@@ -272,7 +319,6 @@ function Game(setupData, i_canvas, startLength, ctrl) {
       }
     }
 
-    //
     this.trail.push ({x:this.px,y:this.py});
     while (this.snkLength<this.trail.length) {
       this.map[this.trail[0].x][this.trail[0].y] = "empty";
@@ -281,23 +327,15 @@ function Game(setupData, i_canvas, startLength, ctrl) {
 
     // if food is on the snake head
     if (this.px === this.fx && this.py === this.fy) {
-      this.generateApple(); // generate new apply pos
+      this.generateFood(); // generate new apply pos
       this.snkLength++;// growing snake
       this.score++; //  plus 1 point
-      //fps++;
     }
-     //draw snake
-    this.lastVx = this.vx;
-    this.lastVy = this.vy;
   };
 
   this.clear = function() {
     this.cxt.clearRect (0, 0, this.canvas.width, this.canvas.height);
   };
-  //
-  // drawBoard(sizeY, sizeX, canvas) {
-  //
-  // }
 
   this.drawBoard = function() {
     scoreDiv.innerText = setupData.name+"'s score: " + this.score;
@@ -310,6 +348,7 @@ function Game(setupData, i_canvas, startLength, ctrl) {
           if (this.map[x][y] == "snakeHead") {
             drawPixel(x,y,"rgba(50,150,50,1)", this.unit);
           }
+        //chess board pattern for empty fields
         if (this.map[x][y] == "empty") {
           if ( (x + y) % 2 == 0) {
             drawPixel(x,y,"rgba(10,30,10,0.5)", this.unit);
@@ -318,6 +357,7 @@ function Game(setupData, i_canvas, startLength, ctrl) {
             drawPixel(x,y,"rgba(10,10,10,0.5)", this.unit);
           }
         }
+
         if (this.map[x][y] == "food")  {
           this.cxt.fillStyle = "rgba(170,0,0,1)";
           this.cxt.fillRect (x * this.unit, y * this.unit, this.unit, this.unit);
@@ -326,10 +366,11 @@ function Game(setupData, i_canvas, startLength, ctrl) {
     }
   };
 
-  this.generateApple = function() {
+  this.generateFood = function() {
     this.fx = getRandomInt(this.sizeX);
     this.fy = getRandomInt(this.sizeY);
     var foodOnSnake = false;
+    //If food is on snake generate again
     for (var i = 0; i < this.trail.length; i++) {
       if (this.fx == this.trail[i].x && this.fy == this.trail[i].y) {
         foodOnSnake = true;
@@ -338,7 +379,7 @@ function Game(setupData, i_canvas, startLength, ctrl) {
     }
 
     if (foodOnSnake) {
-      this.generateApple();
+      this.generateFood();
     }
 
     this.map[this.fx][this.fy] = "food"; // put food on the map
@@ -346,17 +387,11 @@ function Game(setupData, i_canvas, startLength, ctrl) {
 
 
 }
-
-window.onload = function() {
-  document.addEventListener ('keypress', interfaceCtrl);
-};
-
-stateMachine ("mainMenuScreen");
-
-function l(...toConsole) {
-  console.log(...toConsole);
-}
-
+//
+// function l(...toConsole) {
+//   console.log(...toConsole);
+// }
+//
 
 function interfaceCtrl(evt) {
   switch (evt.keyCode) {
@@ -374,48 +409,7 @@ function interfaceCtrl(evt) {
 }
 
 
-newGameBtn.addEventListener ("click", function() { // új játék beállításai
-  stateMachine ("newGameCreatinMenu");
-});
-
-continueBtn.addEventListener ("click", function() {
-  if (gameIsRunning){
-    stateMachine ("gameIsRunning");
-  }
-});
-
-backBtn.addEventListener ("click", function() {
-  stateMachine ("mainMenuScreen");
-});
-
-var btnStartgame = document.getElementById ('btn-startgame');
-btnStartgame.addEventListener ("click", function() {
-  var inputs = [inputWidth, inputHeight, inputUnit];
-
-  gameData = {
-    'name': inputPlayersName.value,
-    'mapWidth': parseInt(inputWidth.value),
-    'mapHeight': parseInt(inputHeight.value),
-    'mapUnit': parseInt(inputUnit.value),
-  };
-
-  if(validateInput(inputs)) {
-     game = new Game(gameData, canvas, 2, [87, 65, 83, 68]); //WASD
-     gameIsRunning = game.isRunning;
-     game.generateApple();
-     document.addEventListener('keydown', function(e) {
-         game.keyDownFunc(e);
-       });
-     document.addEventListener('keyup', function(e) {
-         game.keyUpFunc(e);
-       });
-     stateMachine ("gameIsRunning");
-
-  }
-});
-
-
-// function drawPixel (posX, posY, color, size, offset) {
+// function drawCircle (posX, posY, color, size, offset) {
 //   if (typeof offset === 'undefined' || !offset) {
 //     var offset = 0;
 //   }
@@ -454,7 +448,7 @@ function stateMachine(nextState) {
 
   switch (currentState) {
     case "mainMenuScreen":
-      if (intervalID)    {clearInterval(intervalID);} // pause game
+      if (gameSessionId)    {clearInterval(gameSessionId);} // pause game
       setVisibility(menu,true);
       setVisibility(canvas, false);
       setVisibility(newGameMenu, false);
@@ -495,11 +489,11 @@ function stateMachine(nextState) {
       break;
 // Retrieve the object from storage
     case "gameIsRunning":
+
+      gameSessionId = setInterval (runGame, 1000/fps); // start game
       setVisibility (menu, false);
       setVisibility (newGameMenu, false);
       setVisibility (canvas, true);
-
-      intervalID = setInterval (gameRun, 1000/fps); // start game
       break;
 
     case "highScore":
