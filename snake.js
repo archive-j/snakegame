@@ -18,128 +18,117 @@ var inputHeight;
 var inputPlayersName;
 var inputUnit;
 //Snake positions, speed, food position
-var game;
-var gameData;
-var gameIsRunning = false;
 //var snake, snake2;
 
-setup();
+var gameUI = new GameUI();
 
-function setup() {
-  //ADD EVENT LISTENERS FOR BUTTONS
-  stateMachine ("mainMenuScreen");
 
-  document.addEventListener ('keypress', interfaceKeyDown);
+function GameUI() {
+    var gameStartData;
+    var gameIsRunning = false;
+    //ADD EVENT LISTENERS FOR BUTTONS
+    this.stateMachine("mainMenuScreen");
 
-  newGameBtn.addEventListener ("click", function() { // új játék beállításai
-    stateMachine ("newGameCreatinMenu");
-  });
+    document.addEventListener ('keypress', interfaceKeyDown);
+    newGameBtn.addEventListener ("click", function() {
+      this.stateMachine("newGameCreatinMenu");
+    });
 
-  continueBtn.addEventListener ("click", function() {
-    if (gameIsRunning){
-      stateMachine ("gameIsRunning");
+    continueBtn.addEventListener ("click", function() {
+      if (gameIsRunning){
+        this.stateMachine("gameIsRunning");
+      }
+    });
+
+    backBtn.addEventListener ("click", function() {
+      this.stateMachine("mainMenuScreen");
+    });
+
+    startgameBtn.addEventListener ("click", function() {
+      var inputFields = [inputWidth, inputHeight, inputUnit];
+
+      gameStartData = {
+        'name': inputPlayersName.value,
+        'mapWidth': parseInt(inputWidth.value),
+        'mapHeight': parseInt(inputHeight.value),
+        'mapUnit': parseInt(inputUnit.value),
+      };
+
+      if (validateInput(inputFields)) {
+         var game = new Game(gameStartData, canvas, 2, [87, 65, 83, 68]); //WASD
+         gameIsRunning = game.isRunning;
+         game.generateFood();
+         document.addEventListener('keydown', function(e) {
+             game.keyDownFunc(e);
+           });
+         document.addEventListener('keyup', function(e) {
+             game.keyUpFunc(e);
+           });
+         this.stateMachine("gameIsRunning");
+      }
+    });
+
+    this.stateMachine = function(nextState) {
+      currentState = nextState;
+
+      switch (currentState) {
+        case "mainMenuScreen":
+          if(typeof(this.game) !== "undefined") this.game.pauseGame();
+
+          setVisibility(menu,true);
+          setVisibility(canvas, false);
+          setVisibility(newGameMenu, false);
+          setVisibility(controlFeedback, false);
+
+          if (gameIsRunning) {
+            setVisibility (scoreDiv, true);
+            setVisibility(continueBtn, true);
+          } else {
+            setVisibility(continueBtn, false);
+          }
+
+          break;
+
+        case "newGameCreatinMenu":
+          setVisibility(menu, false);
+          setVisibility(canvas, false);
+          setVisibility(newGameMenu, true);
+
+          if (gameIsRunning) {
+            setVisibility(scoreDiv, true);
+          }
+
+          ///local storage mentes
+          inputPlayersName = document.getElementById('inputPlayersName');
+          inputWidth = document.getElementById('inputCanvasWidth');
+          inputHeight = document.getElementById('inputCanvasHeight');
+          inputUnit = document.getElementById('inputUnit');
+
+          // Load preset values for setup creen
+          if (localStorage.getItem("gameStartData") !== null){
+          	gameStartData= localStorage.getItem('gameStartData');
+          	gameStartData = JSON.parse(gameStartData);
+          	console.log('gameStartData= : ', gameStartData);
+
+            inputPlayersName.value = gameStartData.name;
+            inputWidth.value = gameStartData.mapWidth;
+            inputHeight.value = gameStartData.mapHeight;
+          	inputUnit.value = gameStartData.mapUnit;
+          }
+
+          break;
+    // Retrieve the object from storage
+        case "gameIsRunning":
+          if(typeof(game) !== "undefined") game.continueGame();
+          setVisibility (menu, false);
+          setVisibility (newGameMenu, false);
+          setVisibility (canvas, true);
+          setVisibility(controlFeedback, true);
+          break;
+
+        case "highScore":
+          break;
+      }
     }
-  });
 
-  backBtn.addEventListener ("click", function() {
-    stateMachine ("mainMenuScreen");
-  });
-
-  startgameBtn.addEventListener ("click", function() {
-    var inputs = [inputWidth, inputHeight, inputUnit];
-
-    gameData = {
-      'name': inputPlayersName.value,
-      'mapWidth': parseInt(inputWidth.value),
-      'mapHeight': parseInt(inputHeight.value),
-      'mapUnit': parseInt(inputUnit.value),
-    };
- 
-    if (validateInput(inputs)) {
-       game = new Game(gameData, canvas, 2, [87, 65, 83, 68]); //WASD
-       gameIsRunning = game.isRunning;
-       game.generateFood();
-       document.addEventListener('keydown', function(e) {
-           game.keyDownFunc(e);
-         });
-       document.addEventListener('keyup', function(e) {
-           game.keyUpFunc(e);
-         });
-       stateMachine ("gameIsRunning");
-    }
-  });
-}
-
-function validateInput(inputs) {
-  //console.log("inputs",inputs);
-  var valid = true;
-  for (var i = 0; i < inputs.length; i++) {
-    valid &= inputs[i].checkValidity();
-    // console.log("inputs[i].checkValidity()", inputs[i].checkValidity());
-    // console.log("valid",valid);
-  }
-  return valid;
-}
-
-function stateMachine(nextState) {
-  currentState = nextState;
-
-  switch (currentState) {
-    case "mainMenuScreen":
-      if(typeof(game) !== "undefined") game.pauseGame();
-
-      setVisibility(menu,true);
-      setVisibility(canvas, false);
-      setVisibility(newGameMenu, false);
-      setVisibility(controlFeedback, false);
-
-      if (gameIsRunning) {
-        setVisibility (scoreDiv, true);
-        setVisibility(continueBtn, true);
-      } else {
-        setVisibility(continueBtn, false);
-      }
-
-      break;
-
-    case "newGameCreatinMenu":
-      setVisibility(menu, false);
-      setVisibility(canvas, false);
-      setVisibility(newGameMenu, true);
-
-      if (gameIsRunning) {
-        setVisibility(scoreDiv, true);
-      }
-
-      ///local storage mentes
-      inputPlayersName = document.getElementById('inputPlayersName');
-      inputWidth = document.getElementById('inputCanvasWidth');
-      inputHeight = document.getElementById('inputCanvasHeight');
-      inputUnit = document.getElementById('inputUnit');
-
-      // Load preset values for setup creen
-      if (localStorage.getItem("gameData") !== null){
-      	gameData= localStorage.getItem('gameData');
-      	gameData = JSON.parse(gameData);
-      	console.log('gameData= : ', gameData);
-
-        inputPlayersName.value = gameData.name;
-        inputWidth.value = gameData.mapWidth;
-        inputHeight.value = gameData.mapHeight;
-      	inputUnit.value = gameData.mapUnit;
-      }
-
-      break;
-// Retrieve the object from storage
-    case "gameIsRunning":
-      if(typeof(game) !== "undefined") game.continueGame();
-      setVisibility (menu, false);
-      setVisibility (newGameMenu, false);
-      setVisibility (canvas, true);
-      setVisibility(controlFeedback, true);
-      break;
-
-    case "highScore":
-      break;
-  }
-}
+};
