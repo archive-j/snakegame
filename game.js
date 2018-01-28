@@ -14,7 +14,7 @@ function Game(setupData, i_canvas, startLength, ctrl) {
 
   this.ctrl = ctrl;
   this.snkLength = startLength;
-
+  this.playerName = setupData.name;
   this.sizeX = setupData.mapWidth;
   this.sizeY = setupData.mapHeight;
   this.unit = setupData.mapUnit;
@@ -39,7 +39,7 @@ function Game(setupData, i_canvas, startLength, ctrl) {
     // document.addEventListener('keydown', function(e) {
     //   snake.keyPushFunc(e);
 
-}
+};
 
 Game.prototype.pauseGame = function() {
   console.log("this.SessionId", this.SessionId);
@@ -59,7 +59,7 @@ Game.prototype.updateGame = function() {
   this.drawBoard();
 };
 
-this.clearBoard = function() {
+Game.prototype.clearBoard = function() {
     this.cxt.clearRect (0, 0, this.canvas.width, this.canvas.height);
 };
 
@@ -193,7 +193,8 @@ Game.prototype.validateDir = function() {
     this.nextVy = this.getDirVector(this.ctrlQueValid[this.ctrlQueValid.length-1]).y;
   }
 };
-Game.prototypethis.moveSnake = function() {
+
+Game.prototype.moveSnake = function() {
 
 //Constrain to move the opposite direction
   if (this.vx !== (-1*this.nextVx) || this.vy !== (-1*this.nextVy) ) {
@@ -259,7 +260,7 @@ Game.prototypethis.moveSnake = function() {
 };
 
 Game.prototype.drawBoard = function() {
-  scoreDiv.innerText = setupData.name + "'s score: " + this.score;
+  scoreDiv.innerText = this.playerName + "'s score: " + this.score;
 
   for (var x=0;x < this.sizeX;x++) {
     for (var y=0;y < this.sizeY;y++)  {
