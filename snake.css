@@ -189,11 +189,14 @@ input:invalid, input:placeholder-shown {
 #debug {
 	position: absolute;
 	float: left;
-	padding: 10px;
+	padding: 20px;
+	top: 20px;
+	left: 20px;
 	border: 1px solid black;
-	border-radius: 2px;
-	background-color: gray;
+	border-radius: 20px;
+	background-color: rgba(122,122,122,0.2);
+	box-shadow: 0 0 20px rgb(0,0,0);
 	font-size: 1em;
-	width: 300px;
-	height: 200px;
+	width: 250px;
+	height: auto;
 }

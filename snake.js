@@ -11,7 +11,7 @@ var inputWidth;
 var inputHeight;
 var inputPlayersName;
 var inputUnit;
-var fps = 5;// frame per second
+var fps = 3;// frame per second
 //Snake positions, speed, food position
 var intervalID;
 var game;
@@ -78,13 +78,14 @@ function Game(setupData, i_canvas, startLength, ctrl) {
     //   snake.keyPushFunc(e);
 
 
+
   this.keyUpFunc = function(evt) {
     switch (evt.keyCode) {
       case this.ctrl[1]:
         // this.nextVx = -1; //  LEFT
         // this.nextVy = 0;
         if (this.ctrlQueue.includes("LEFT")) {
-          removeElement(this.ctrlQueue,"LEFT");
+          this.ctrlQueue.removeElement("LEFT");
         }
 
         break;
@@ -92,24 +93,29 @@ function Game(setupData, i_canvas, startLength, ctrl) {
         // this.nextVx = 0; // UP
         // this.nextVy = -1;
         if (this.ctrlQueue.includes("UP")) {
-          removeElement(this.ctrlQueue,"UP");
+          this.ctrlQueue.removeElement("UP");
+        //  removeElement(this.ctrlQueue,"UP");
         }
         break;
       case this.ctrl[3]:
         // this.nextVx = 1; // RIGHT
         // this.nextVy = 0;
         if (this.ctrlQueue.includes("RIGHT")) {
-          removeElement(this.ctrlQueue,"RIGHT");
+          this.ctrlQueue.removeElement("RIGHT");
+      //    removeElement(this.ctrlQueue,"RIGHT");
         }
         break;
       case this.ctrl[2]:
         // this.nextVx = 0; // DOWN
         // this.nextVy = 1;
         if (this.ctrlQueue.includes("DOWN")) {
-          removeElement(this.ctrlQueue,"DOWN");
+          this.ctrlQueue.removeElement("DOWN");
+        //  removeElement(this.ctrlQueue,"DOWN");
         }
         break;
     }
+    this.validateDir();
+
 
   //  console.log("ctrlQue", this.ctrlQueue);
   };
@@ -124,8 +130,8 @@ function Game(setupData, i_canvas, startLength, ctrl) {
           this.ctrlQueue.push("UP");
         }
 
-        this.nextVx = 0; // UP
-        this.nextVy = -1;
+    //    this.nextVx = 0; // UP
+  //      this.nextVy = -1;
 
         break;
       case this.ctrl[1]:
@@ -134,8 +140,8 @@ function Game(setupData, i_canvas, startLength, ctrl) {
           this.ctrlQueue.push("LEFT");
         }
 
-        this.nextVx = -1; //  LEFT
-        this.nextVy = 0;
+  //      this.nextVx = -1; //  LEFT
+  //      this.nextVy = 0;
         break;
 
       case this.ctrl[2]:
@@ -143,8 +149,8 @@ function Game(setupData, i_canvas, startLength, ctrl) {
         if (!this.ctrlQueue.includes("DOWN")) {
           this.ctrlQueue.push("DOWN");
         }
-        this.nextVx = 0; // DOWN
-        this.nextVy = 1;
+//        this.nextVx = 0; // DOWN
+//        this.nextVy = 1;
         break;
       case this.ctrl[3]:
 
@@ -152,10 +158,11 @@ function Game(setupData, i_canvas, startLength, ctrl) {
           this.ctrlQueue.push("RIGHT");
         }
 
-        this.nextVx = 1; // RIGHT
-        this.nextVy = 0;
+  //      this.nextVx = 1; // RIGHT
+  //      this.nextVy = 0;
         break;
       }
+      this.validateDir();
 
 //    console.log("ctrlQue", this.ctrlQueue);
   };
@@ -199,27 +206,34 @@ function Game(setupData, i_canvas, startLength, ctrl) {
     for(var i = 0; i < this.ctrlQueue.length; i++) {
       this.ctrlQueValid[i] = this.ctrlQueue[i];
     }
-    console.log("validbefore",this.ctrlQueValid);
+    //console.log("validbefore",this.ctrlQueValid);
   //  console.log("vectorx",this.getVectorDir(this.currentDir).vectorX);
     for(var i = 0; i < this.ctrlQueue.length; i++) {
       var vector = this.getVectorDir(this.ctrlQueue[i]);
       if((this.vx === (-1*vector.x) && this.vy === 0) || (this.vy === (-1*vector.y) && this.vx === 0)){
 
-        console.log("this.vx", this.vx, "vector.x",(-1*vector.x));
-        console.log("this.vy", this.vy, "vector.y",(-1*vector.y));
-        console.log("Remove");
-        removeElement(this.ctrlQueValid, this.ctrlQueue[i]);
-        console.log("this.ctrlQueValid", this.ctrlQueValid, "i", i);
+    //    console.log("this.vx", this.vx, "vector.x",(-1*vector.x));
+      //  console.log("this.vy", this.vy, "vector.y",(-1*vector.y));
+      //  console.log("Remove");
+        //removeElement(this.ctrlQueValid, this.ctrlQueue[i]);
+        this.ctrlQueValid.removeElement(this.ctrlQueue[i]);
+  //      console.log("this.ctrlQueValid", this.ctrlQueValid, "i", i);
       }
     }
-
+    if (this.ctrlQueValid.length > 0) {
+  //    console.log("this.ctrlQueValid", this.ctrlQueValid);
+  //    console.log("this.ctrlQueValid.length-1" ,this.ctrlQueValid.length-1);
+  //    console.log("this.ctrlQueValid[this.ctrlQueValid.length-1]", this.ctrlQueValid[this.ctrlQueValid.length-1]);
+  //    console.log("this.nextVx", this.getVectorDir(this.ctrlQueValid[this.ctrlQueValid.length-1]).x);
+  //    console.log("this.nextVy", this.getVectorDir(this.ctrlQueValid[this.ctrlQueValid.length-1]).y);
+      this.nextVx = this.getVectorDir(this.ctrlQueValid[this.ctrlQueValid.length-1]).x;
+      this.nextVy = this.getVectorDir(this.ctrlQueValid[this.ctrlQueValid.length-1]).y;
+    }
   };
 
   this.moveSnake = function() {
-
-    this.validateDir();
-    
-    //Constrain to move the opposite direction
+     document.getElementById("debug").innerHTML = "CtrlQ: "+ this.ctrlQueue + "<br>CtrlQ_Valid: "+ this.ctrlQueValid +"<br>Currentdir: " + this.currentDir;
+  //Constrain to move the opposite direction
     if (this.vx != (-1*this.nextVx) || this.vy != (-1*this.nextVy) ) {
       this.vx = this.nextVx;
       //  l(this.nextVx);
@@ -229,7 +243,6 @@ function Game(setupData, i_canvas, startLength, ctrl) {
     //Get current status
   //  console.log("current vector",(this.getVectorDir(this.currentDir)).x);
 
-    document.getElementById("debug").innerHTML = "CtrlQ: "+ this.ctrlQueue + "<br>CtrlQ_Valid: "+ this.ctrlQueValid +"<br>Currentdir: " + this.currentDir;
 
     // increment position by speed
     this.px += this.vx;
@@ -330,6 +343,8 @@ function Game(setupData, i_canvas, startLength, ctrl) {
 
     this.map[this.fx][this.fy] = "food"; // put food on the map
   };
+
+
 }
 
 window.onload = function() {

@@ -25,9 +25,11 @@ function toggleVisiblity(div) {
   }
 }
 
-function removeElement(array, element){
-  var index = array.indexOf(element);
+
+
+Array.prototype.removeElement = function(element) {
+  var index = this.indexOf(element);
   if (index > -1){
-    array.splice(index,1);
+    this.splice(index,1);
   }
-}
+};
