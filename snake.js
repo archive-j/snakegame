@@ -29,6 +29,10 @@ function GameUI() {
     let inputUnit = document.getElementById('inputUnit');
 
 
+    var inputA = document.getElementById("switch_left");
+    autoCalculateUnit = inputA.value;
+    console.log(autoCalculateUnit);
+
 
     var outputU = document.getElementById("valueU");
     var outputW = document.getElementById("valueW");
@@ -39,15 +43,26 @@ function GameUI() {
     outputH.innerHTML = inputWidth.value; // Display the default slider value
 
     // Update the current slider value (each time you drag the slider handle)
-    inputUnit.oninput = function() {
+    inputUnit.oncuechange  = function() {
         outputU.innerHTML = this.value;
     };
     inputWidth.oninput = function() {
         outputW.innerHTML = this.value;
+        if (autoCalculateUnit){
+          console.log("baz",600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5));
+            inputUnit.value = 600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5);
+            outputU.innerHTML = inputUnit.value;
+        }
     };
     inputHeight.oninput = function() {
         outputH.innerHTML = this.value;
+        if (autoCalculateUnit){
+          console.log("baz",600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5));
+          inputUnit.value = 600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5);
+          outputU.innerHTML = inputUnit.value;
+        }
     };
+
 
     this.gameStartData;
     this.gameIsRunning = false;
