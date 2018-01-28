@@ -4,7 +4,6 @@
     <link rel="stylesheet" href="snake.css" type="text/css">
     <meta charset="utf-8">
     <title>SNAKE by BartaG</title>
-
   </head>
 
   <body>
@@ -30,42 +29,48 @@
       <a class="btn btn-sm animated-button victoria-two" id="newGameBtn" href="#">New Game</a>
       <a class="btn btn-sm animated-button victoria-two" id="highScoreBtn" href="#">HighScore</a>
       <a class="btn btn-sm animated-button victoria-two" id="continueBtn" href="#">Continue</a>
-
     </div>
 
     <div id="newGameMenu" class="menu column col-sm- center">
-      <div class="row h2 text-center text-uppercase">Creating new game
-      </div>
+      <div class="row h2 text-center text-uppercase">Creating new game</div>
       <form>
-        <div class="row form-group">
-          <label for="PlayerName">Player's name</label>
-          <input type="text" class="form-control" id="inputPlayersName" placeholder="Name" value="Player" minlength="1" maxlength="20">
+        <div class="row">
+          <div class="form-group col">
+            <label for="PlayerName">Player's name</label>
+            <input type="text" class="form-control" id="inputPlayersName" placeholder="Name" value="Player" minlength="1" maxlength="20">
+          </div>
         </div>
 
         <div class="row">
-          <div class="form-group col">
+          <div class="form-group col-8">
           	<label for="inputUnit">Unit (1-60)</label>
-            	<input type="number" class="form-control" id="inputUnit" placeholder="Pixel px" value="30" min="1" max="60">
-    	    </div>
+          	<input type="number" class="form-control" id="inputUnit" placeholder="Pixel px" value="30" min="1" max="60">
+  	       </div>
 
-        <div class="form-group switch-field col">
-            <div class="switch-title">Auto-Size</div>
-          	<input type="radio" id="switch_left" name="switch_2" value="yes" checked/>
-           	<label for="switch_left">Yes</label>
-           	<input type="radio" id="switch_right" name="switch_2" value="no" />
-           	<label for="switch_right">No</label>
+        <div class="row">
+          <div class="form-group switch-field col">
+              <div class="switch-title">Auto-Size</div>
+            	<input type="radio" id="switch_left" name="switch_2" value="yes" checked/>
+             	<label for="switch_left">Yes</label>
+             	<input type="radio" id="switch_right" name="switch_2" value="no" />
+             	<label for="switch_right">No</label>
+          </div>
+        </div>
+      </div>
+
+        <div class="row">
+          <div class="col form-group ">
+            <label for="inputCanvasWidth">Map X Size (2-100)</label>
+            <input type="number" class="form-control" id="inputCanvasWidth" placeholder="Width px" value="5" min="2" max="100">
           </div>
         </div>
 
-        <div class="row form-group">
-          <label for="inputCanvasWidth">Map X Size (2-100)</label>
-          <input type="number" class="form-control" id="inputCanvasWidth" placeholder="Width px" value="5" min="2" max="100">
+        <div class="row">
+          <div class="col form-group">
+            <label for="inputCanvasHeight">Map Y Size (2-100)</label>
+            <input type="number" class="form-control" id="inputCanvasHeight" placeholder="Height px" value="5"  min="2" max="100">
           </div>
-          <div class="row form-group">
-          <label for="inputCanvasHeight">Map Y Size (2-100)</label>
-          <input type="number" class="form-control" id="inputCanvasHeight" placeholder="Height px" value="5"  min="2" max="100">
         </div>
-
       </form>
           <div class="row ">
             <a id="btn-back" class="pull-left  btn btn-sm col-sm-4 animated-button victoria-two" href="#">Back</a>

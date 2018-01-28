@@ -15,7 +15,6 @@ function setVisibility(element, show) {
   }
 }
 
-
 function toggleVisiblity(element) {
   if (element.visible == true) {
     setVisibility(div, false);
@@ -25,7 +24,6 @@ function toggleVisiblity(element) {
     element.visible = true;
   }
 }
-
 
 function debugValue(debugValue){
   return '<div class="debugvalue">' + debugValue + "</div>";

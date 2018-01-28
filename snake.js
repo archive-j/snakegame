@@ -119,12 +119,12 @@ function Game(setupData, i_canvas, startLength, ctrl) {
   };
 
   this.continueGame = function() {
+    setVisibility(controlFeedback, true);
     this.SessionId = setInterval (this.runGame.bind(this), 1000/game.fps); // start game
   };
 
 
   this.runGame = function() {
-  //  console.log(this.currentDir);
     this.clearBoard();
     this.moveSnake();
     this.drawBoard();
@@ -135,7 +135,6 @@ function Game(setupData, i_canvas, startLength, ctrl) {
   };
 
   this.keyUpFunc = function(evt) {
-
 
     switch (evt.keyCode) {
       case this.ctrl[1]:
@@ -459,6 +458,8 @@ function stateMachine(nextState) {
       setVisibility(menu,true);
       setVisibility(canvas, false);
       setVisibility(newGameMenu, false);
+      setVisibility(controlFeedback, false);
+
       if (gameIsRunning) {
         setVisibility (scoreDiv, true);
         setVisibility(continueBtn, true);
