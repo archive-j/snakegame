@@ -45,12 +45,3 @@ function setPressed(element, pressed) {
     element.pressed = false;
   }
 }
-
-function validateInput(inputFields) {
-  //console.log("inputs",inputs);
-  var valid = true;
-  for (var i = 0; i < inputFields.length; i++) {
-    valid &= inputFields[i].checkValidity();
-  }
-  return valid;
-};

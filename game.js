@@ -39,13 +39,15 @@ function Game(setupData, i_canvas, startLength, ctrl) {
     // document.addEventListener('keydown', function(e) {
     //   snake.keyPushFunc(e);
   this.pauseGame = function() {
+    console.log("this.SessionId", this.SessionId);
     if (this.SessionId) {
+      console.log("this.SessionId", this.SessionId);
       clearInterval(this.SessionId);
     } // pause game
   };
 
   this.continueGame = function() {
-    this.SessionId = setInterval (this.updateGame.bind(this), 1000/game.fps); // start game
+    this.SessionId = setInterval (this.updateGame.bind(this), 1000/this.fps); // start game
   };
 
   this.updateGame = function() {
@@ -316,19 +318,4 @@ function Game(setupData, i_canvas, startLength, ctrl) {
     cxt.fillRect (posX * size + offset, posY * size + offset, size - 2 * offset, size - 2 * offset);
   };
 
-}
-
-function interfaceKeyDown(evt) {
-  switch (evt.keyCode) {
-    case 32: //pause on space
-      switch  (currentState) {
-        case "mainMenuScreen":
-          stateMachine ("gameIsRunning");
-          break;
-        case "gameIsRunning":
-          stateMachine ("mainMenuScreen");
-          break;
-        }
-    break;
-  }
 }
