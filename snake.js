@@ -14,7 +14,6 @@ var inputHeight;
 var inputPlayersName;
 var inputUnit;
 //Snake positions, speed, food position
-var gameSessionId;
 var game;
 var gameData;
 var snake, snake2;
@@ -65,18 +64,11 @@ function setup() {
       }
     });
 
-
   };
   stateMachine ("mainMenuScreen");
 
 }
 
-
-function runGame() {
-  game.clear();
-  game.moveSnake();
-  game.drawBoard();
-}
 
 function Game(setupData, i_canvas, startLength, ctrl) {
   this.fps = 3;// frame per second
@@ -115,6 +107,27 @@ function Game(setupData, i_canvas, startLength, ctrl) {
     //document.addEventListener('keydown', snake2.keyPushFunc.bind(snake2)); // fgv referencia-t vár
     // document.addEventListener('keydown', function(e) {
     //   snake.keyPushFunc(e);
+  this.pauseGame = function() {
+    if (this.SessionId) {
+      clearInterval(this.SessionId);
+    } // pause game
+  };
+
+  this.continueGame = function() {
+    this.SessionId = setInterval (this.runGame.bind(this), 1000/game.fps); // start game
+  };
+
+
+  this.runGame = function() {
+    console.log(this.currentDir)
+    this.clearBoard();
+    this.moveSnake();
+    this.drawBoard();
+  };
+
+  this.clearBoard = function() {
+      this.cxt.clearRect (0, 0, this.canvas.width, this.canvas.height);
+  };
 
   this.keyUpFunc = function(evt) {
     switch (evt.keyCode) {
@@ -323,12 +336,8 @@ function Game(setupData, i_canvas, startLength, ctrl) {
       "<br> Current direction: " + debugValue(this.currentDir);
   };
 
-  this.clear = function() {
-    this.cxt.clearRect (0, 0, this.canvas.width, this.canvas.height);
-  };
-
   this.drawBoard = function() {
-    scoreDiv.innerText = setupData.name+"'s score: " + this.score;
+    scoreDiv.innerText = setupData.name + "'s score: " + this.score;
 
     for (var x=0;x < this.sizeX;x++) {
       for (var y=0;y < this.sizeY;y++)  {
@@ -361,7 +370,7 @@ function Game(setupData, i_canvas, startLength, ctrl) {
     var foodOnSnake = false;
     //If food is on snake generate again
     for (var i = 0; i < this.trail.length; i++) {
-      if (this.fx == this.trail[i].x && this.fy == this.trail[i].y) {
+      if (this.fx === this.trail[i].x && this.fy === this.trail[i].y) {
         foodOnSnake = true;
         break;
       }
@@ -427,19 +436,10 @@ function validateInput(inputs) {
 function stateMachine(nextState) {
   currentState = nextState;
 
-  this.pauseGame = function(){
-    if (gameSessionId) {
-      clearInterval(gameSessionId);
-    } // pause game
-  };
-
-  this.continueGame = function(){
-    gameSessionId = setInterval (runGame, 1000/game.fps); // start game
-  };
-
   switch (currentState) {
     case "mainMenuScreen":
-      this.pauseGame();
+      if(typeof(game) !== "undefined") game.pauseGame();
+
       setVisibility(menu,true);
       setVisibility(canvas, false);
       setVisibility(newGameMenu, false);
@@ -481,7 +481,7 @@ function stateMachine(nextState) {
       break;
 // Retrieve the object from storage
     case "gameIsRunning":
-      this.continueGame();
+      if(typeof(game) !== "undefined") game.continueGame();
       setVisibility (menu, false);
       setVisibility (newGameMenu, false);
       setVisibility (canvas, true);

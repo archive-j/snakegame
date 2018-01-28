@@ -5,12 +5,12 @@ function getRandomInt (max)  {
 
 function setVisibility(div, show) {
   if (show) {
-    div.classList.remove ('hidden');
-    div.classList.add ('visible');
+
+    div.style.display = "block"; //hidden 
     div.visible = true;
   } else {
-    div.classList.remove ('visible');
-    div.classList.add ('hidden');
+
+  div.style.display = "none"; //hidden
     div.visible = false;
   }
 }

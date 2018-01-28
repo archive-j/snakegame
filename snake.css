@@ -1,10 +1,12 @@
-@import url(https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css);
+@import url(https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css);
 @import url(https://fonts.googleapis.com/css?family=Lato:300,400,700);
 
 body {
 	font-family: "Operator Mono SSm A", "Operator Mono SSm B", 'Source Code Pro', Menlo, Consolas, Monaco, monospace;
 	background: #222222;
-	color: #FFF;
+  color: #bfd583;
+
+	}
 }
 .jumbotron h1 {
 	color: #353535;
@@ -186,17 +188,14 @@ canvas {
 input:invalid, input:placeholder-shown {
 	box-shadow: 0 0 50px 1px red;
 }
-body {
-		font-family: "Operator Mono SSm A", "Operator Mono SSm B", 'Source Code Pro', Menlo, Consolas, Monaco, monospace;
-		color: #bfd583;
-}
+
 #debug {
 	display: block;
 	position: absolute;
 	float: left;
 	padding: 20px;
-	top: 20px;
-	left: 20px;
+	top: 2%;
+	left: 1%;
 	border: 1px solid black;
 	border-radius: 20px;
 	background-color: rgba(122,122,122,0.2);
@@ -216,6 +215,21 @@ body {
 	float: right;
 }
 
-.game-name{ 
+#control-feedback{
+		display: block;
+		position: absolute;
+		float: left;
+		top: 50%;
+		left: 1%;
+		padding: 20px;
+		border: 1px solid black;
+		border-radius: 20px;
+		background-color: rgba(122,122,122,0.2);
+		box-shadow: 0 0 20px rgb(0,0,0);
+		font-size: 1em;
+		width: 250px;
+		height: auto;
+}
+.game-name{
 	font-family: "Operator Mono SSm A", "Operator Mono SSm B", 'Source Code Pro', Menlo, Consolas, Monaco, monospace;
 }
