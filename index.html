@@ -26,9 +26,9 @@
 
     <div id="menu" class="menu column col-sm- center">
       <div class="h1 game-name text-center text-uppercase">Snake</div>
-      <a class="btn btn-sm animated-button victoria-two" id="newGameBtn" href="#">New Game</a>
-      <a class="btn btn-sm animated-button victoria-two" id="highScoreBtn" href="#">HighScore</a>
-      <a class="btn btn-sm animated-button victoria-two" id="continueBtn" href="#">Continue</a>
+      <a class="btn btn-sm animated-button victoria-two" id="newGame-btn" href="#">New Game</a>
+      <a class="btn btn-sm animated-button victoria-two" id="highScore-btn" href="#">HighScore</a>
+      <a class="btn btn-sm animated-button victoria-two" id="continue-btn" href="#">Continue</a>
     </div>
 
     <div id="newGameMenu" class="menu column col-sm- center">
@@ -37,14 +37,14 @@
         <div class="row">
           <div class="form-group col">
             <label for="PlayerName">Player's name</label>
-            <input type="text" class="form-control" id="inputPlayersName" placeholder="Name" value="Player" minlength="1" maxlength="20">
+            <input type="text" class="form-control" id="inputPlayersName" placeholder="Name" value="" minlength="1" maxlength="20">
           </div>
         </div>
 
         <div class="row">
           <div class="form-group col-8">
           	<label for="inputUnit">Unit (1-60)</label>
-          	<input type="number" class="form-control" id="inputUnit" placeholder="Pixel px" value="30" min="1" max="60">
+          	<input type="number" class="form-control" id="inputUnit" placeholder="Pixel px" value="40" min="1" max="60">
   	       </div>
 
         <div class="row">
@@ -61,20 +61,20 @@
         <div class="row">
           <div class="col form-group ">
             <label for="inputCanvasWidth">Map X Size (2-100)</label>
-            <input type="number" class="form-control" id="inputCanvasWidth" placeholder="Width px" value="5" min="2" max="100">
+            <input type="number" class="form-control" id="inputCanvasWidth" placeholder="Width px" value="20" min="2" max="100">
           </div>
         </div>
 
         <div class="row">
           <div class="col form-group">
             <label for="inputCanvasHeight">Map Y Size (2-100)</label>
-            <input type="number" class="form-control" id="inputCanvasHeight" placeholder="Height px" value="5"  min="2" max="100">
+            <input type="number" class="form-control" id="inputCanvasHeight" placeholder="Height px" value="20"  min="2" max="100">
           </div>
         </div>
       </form>
           <div class="row ">
-            <a id="btn-back" class="pull-left  btn btn-sm col-sm-4 animated-button victoria-two" href="#">Back</a>
-            <a id="btn-startgame" class="pull-right btn btn-sm col-sm-4 animated-button victoria-two" href="#">Start Game</a>
+            <a id="back-btn" class="pull-left  btn btn-sm col-sm-4 animated-button victoria-two" href="#">Back</a>
+            <a id="startgame-btn" class="pull-right btn btn-sm col-sm-4 animated-button victoria-two" href="#">Start Game</a>
           </div>
     </div>
 

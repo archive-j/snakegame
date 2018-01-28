@@ -5,8 +5,7 @@ function getRandomInt (max)  {
 
 function setVisibility(element, show) {
   if (show) {
-
-    element.style.display = "block"; //hidden
+    element.style.display = "block"; //visible
     element.visible = true;
   } else {
 
@@ -25,7 +24,7 @@ function toggleVisiblity(element) {
   }
 }
 
-function debugValue(debugValue){
+function createDivForDebug(debugValue){
   return '<div class="debugvalue">' + debugValue + "</div>";
 }
 
@@ -39,7 +38,7 @@ Array.prototype.removeElement = function(element) {
 function setPressed(element, pressed) {
   if (pressed) {
     element.classList.add("pressed"); //pressed
-    console.log("element.classList",element.classList);
+    //console.log("element.classList",element.classList);
     element.pressed = true;
   } else {
     element.classList.remove("pressed"); //pressed
