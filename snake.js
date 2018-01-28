@@ -7,10 +7,7 @@ var controlFeedback = document.getElementById ('control-feedback');
 var canvas = document.querySelector ('canvas');
 var cxt = canvas.getContext ("2d");
 
-var highScoreBtn = document.getElementById ('highScore-btn');
-var continueBtn = document.getElementById ('continue-btn');
-var startgameBtn = document.getElementById ('startgame-btn');
-var backBtn = document.getElementById ('back-btn');
+
 
 //Snake positions, speed, food position
 //var snake, snake2;
@@ -18,17 +15,18 @@ var backBtn = document.getElementById ('back-btn');
 var gameUI = new GameUI();
 
 function GameUI() {
+    const newGameBtn = document.getElementById ('newGame-btn');
+    const highScoreBtn = document.getElementById ('highScore-btn');
+    const continueBtn = document.getElementById ('continue-btn');
+    const startgameBtn = document.getElementById ('startgame-btn');
+    const backBtn = document.getElementById ('back-btn');
+    let inputWidth = document.getElementById('inputCanvasWidth');
+    let inputHeight = document.getElementById('inputCanvasHeight');
+    let inputPlayersName = document.getElementById('inputPlayersName');
+    let inputUnit = document.getElementById('inputUnit');
+
     this.gameStartData;
     this.gameIsRunning = false;
-
-
-
-
-    const inputWidth = document.getElementById('inputCanvasWidth');
-    const inputHeight = document.getElementById('inputCanvasHeight');
-    const inputPlayersName = document.getElementById('inputPlayersName');
-    const inputUnit = document.getElementById('inputUnit');
-    var newGameBtn = document.getElementById ('newGame-btn');
     //ADD EVENT LISTENERS FOR BUTTONS
 
 
@@ -77,12 +75,16 @@ function GameUI() {
           ///local storage mentes
 
           // Load preset values for setup creen
-          if (localStorage.getItem("gameStartData") !== null){
-          	this.gameStartData= localStorage.getItem('gameStartData');
+          //console.log("localStorage.getItem('gameStartData') !== undefined",localStorage.getItem("gameStartData") !== undefined);
+          if (localStorage.getItem("gameStartData") !== undefined){
+          	this.gameStartData = localStorage.getItem('gameStartData');
+            console.log("localStorage.getItem('gameStartData')",localStorage.getItem('gameStartData'));
+      //      console.log("this.gameStartData" , this.gameStartData);
           	this.gameStartData = JSON.parse(this.gameStartData);
           	//console.log('gameStartData= : ', this.gameStartData);
-
+        //    console.log("inputPlayersName.value before",inputPlayersName.value);
             inputPlayersName.value = this.gameStartData.name;
+        //    console.log("inputPlayersName.value after",inputPlayersName.value);
             inputWidth.value = this.gameStartData.mapWidth;
             inputHeight.value = this.gameStartData.mapHeight;
           	inputUnit.value = this.gameStartData.mapUnit;
@@ -103,14 +105,15 @@ function GameUI() {
       }
     };
 
-
-    this.interfaceKeyDown = function(evt) { 
+    this.interfaceKeyDown = function(evt) {
       switch (evt.keyCode) {
         case 32: //pause on space
           switch  (this.currentState) {
             case "mainMenuScreen":
+            if(typeof(this.game) !== "undefined"){
               this.stateMachine ("gameIsRunning");
               break;
+            }
             case "gameIsRunning":
               this.stateMachine ("mainMenuScreen");
               break;
@@ -127,7 +130,7 @@ function GameUI() {
     }.bind(this));
 
     continueBtn.addEventListener ("click", function() {
-      if (gameIsRunning){
+      if (this.game.IsRunning){
         this.stateMachine("gameIsRunning");
       }
     }.bind(this));
@@ -137,16 +140,16 @@ function GameUI() {
     }.bind(this));
 
     startgameBtn.addEventListener ("click", function() {
-      var inputFields = [inputWidth, inputHeight, inputUnit];
-
-      this.gameStartData = {
-        'name': inputPlayersName.value,
-        'mapWidth': parseInt(inputWidth.value),
-        'mapHeight': parseInt(inputHeight.value),
-        'mapUnit': parseInt(inputUnit.value),
-      };
+      let inputFields = [inputWidth, inputHeight, inputUnit];
 
       if (this.validateInput(inputFields)) {
+        console.log("true");
+        this.gameStartData = {
+          'name': inputPlayersName.value,
+          'mapWidth': parseInt(inputWidth.value),
+          'mapHeight': parseInt(inputHeight.value),
+          'mapUnit': parseInt(inputUnit.value),
+        };
          this.game = new Game(this.gameStartData, canvas, 2, [87, 65, 83, 68]); //WASD
          this.gameIsRunning = this.game.isRunning;
          this.game.generateFood();
@@ -161,7 +164,5 @@ function GameUI() {
     }.bind(this));
 
     document.addEventListener ('keypress', this.interfaceKeyDown.bind(this));
-
-
 
 };

@@ -6,7 +6,7 @@ function Game(setupData, i_canvas, startLength, ctrl) {
   this.isRunning = true;
 
   //Save to the local storage
-  localStorage.setItem('gameData', JSON.stringify(setupData));
+  localStorage.setItem('gameStartData', JSON.stringify(setupData));
   console.log("GameSetupSavedToTheLocalStorage", setupData);
 
   this.canvas = i_canvas;
@@ -225,10 +225,10 @@ function Game(setupData, i_canvas, startLength, ctrl) {
     for (var i = 0; i <   this.trail.length; i++) {
       this.map[this.px][this.py] = "snakeHead";
       this.map[this.trail[i].x][this.trail[i].y] = "snake";
+
       if (this.px === this.trail[i].x && this.py === this.trail[i].y)  { //If snake meets itself length reduced to 1 and score reduced to 0
         this.snkLength = 1;
-        this.score =  0;
-      }
+        this.score =  0;}
     }
 
     this.trail.push ({x:this.px,y:this.py});
@@ -237,7 +237,7 @@ function Game(setupData, i_canvas, startLength, ctrl) {
       this.trail.shift();
     }
 
-    // if food is on the snake head
+    // if snake eat the food
     if (this.px === this.fx && this.py === this.fy) {
       this.generateFood(); // generate new apply pos
       this.snkLength++;// growing snake
