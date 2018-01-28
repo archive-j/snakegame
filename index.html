@@ -3,21 +3,22 @@
   <head>
     <link rel="stylesheet" href="snake.css" type="text/css">
     <meta charset="utf-8">
-    <title></title>
-  </head>
-  <body>
-    <div id="debug">
+    <title>SNAKE</title>
 
-    </div>
+  </head>
+
+  <body>
+    <div id="debug"></div>
     <div id="menu" class="menu column col-sm- center hidden">
-      <a class="btn btn-sm animated-button victoria-two" href="#">New Game</a>
-      <a class="btn btn-sm animated-button victoria-two" href="#">HighScore</a>
-      <a class="btn btn-sm animated-button victoria-two" href="#">Continue</a>
+      <div class="h1 game-name text-center text-uppercase">Snake</div>
+      <a class="btn btn-sm animated-button victoria-two" id="newGameBtn" href="#">New Game</a>
+      <a class="btn btn-sm animated-button victoria-two" id="highScoreBtn" href="#">HighScore</a>
+      <a class="btn btn-sm animated-button victoria-two" id="continueBtn" href="#">Continue</a>
+
     </div>
 
     <div id="newGameMenu" class="menu column col-sm- center hidden">
-      <div class="row h2">
-        Creating new game
+      <div class="row h2 text-center text-uppercase">Creating new game
       </div>
       <form>
         <div class="row form-group">
@@ -32,7 +33,7 @@
     	    </div>
 
         <div class="form-group switch-field col">
-            <div class="switch-title">Auto</div>
+            <div class="switch-title">Auto-Size</div>
           	<input type="radio" id="switch_left" name="switch_2" value="yes" checked/>
            	<label for="switch_left">Yes</label>
            	<input type="radio" id="switch_right" name="switch_2" value="no" />

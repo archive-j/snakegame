@@ -2,8 +2,8 @@
 @import url(https://fonts.googleapis.com/css?family=Lato:300,400,700);
 
 body {
-	font-family: 'Lato', sans-serif;
-	background: #444444;
+	font-family: "Operator Mono SSm A", "Operator Mono SSm B", 'Source Code Pro', Menlo, Consolas, Monaco, monospace;
+	background: #222222;
 	color: #FFF;
 }
 .jumbotron h1 {
@@ -50,6 +50,7 @@ a.animated-button:link, a.animated-button:visited {
 	-o-transition: all 1s ease;
 	transition: all 1s ease;
 }
+
 a.animated-button:link:after, a.animated-button:visited:after {
 	content: "";
 	position: absolute;
@@ -64,7 +65,7 @@ a.animated-button:link:after, a.animated-button:visited:after {
 	transition: all 0.75s ease 0s;
 }
 a.animated-button:link:hover, a.animated-button:visited:hover {
-	color: #FFF;
+	color: #000;
 	text-shadow: none;
 }
 a.animated-button:link:hover:after, a.animated-button:visited:hover:after {
@@ -94,30 +95,30 @@ a.animated-button:link, a.animated-button:visited {
 /* Victoria Buttons */
 
 a.animated-button.victoria-one {
-	border: 2px solid #D24D57;
+	border: 2px solid #bfd583;
 }
 a.animated-button.victoria-one:after {
-	background: #D24D57;
+	background: #bfd583;
 	-moz-transform: translateX(-50%) translateY(-50%) rotate(-25deg);
 	-ms-transform: translateX(-50%) translateY(-50%) rotate(-25deg);
 	-webkit-transform: translateX(-50%) translateY(-50%) rotate(-25deg);
 	transform: translateX(-50%) translateY(-50%) rotate(-25deg);
 }
 a.animated-button.victoria-two {
-	border: 2px solid #D24D57;
+	border: 2px solid #bfd583;
 }
 a.animated-button.victoria-two:after {
-	background: #D24D57;
+	background: #bfd583;
 	-moz-transform: translateX(-50%) translateY(-50%) rotate(25deg);
 	-ms-transform: translateX(-50%) translateY(-50%) rotate(25deg);
 	-webkit-transform: translateX(-50%) translateY(-50%) rotate(25deg);
 	transform: translateX(-50%) translateY(-50%) rotate(25deg);
 }
 a.animated-button.victoria-three {
-	border: 2px solid #D24D57;
+	border: 2px solid #bfd583;
 }
 a.animated-button.victoria-three:after {
-	background: #D24D57;
+	background: #bfd583;
 	opacity: .5;
 	-moz-transform: translateX(-50%) translateY(-50%);
 	-ms-transform: translateX(-50%) translateY(-50%);
@@ -129,10 +130,10 @@ a.animated-button.victoria-three:hover:after {
 	opacity: 1;
 }
 a.animated-button.victoria-four {
-	border: 2px solid #D24D57;
+	border: 2px solid #bfd583;
 }
 a.animated-button.victoria-four:after {
-	background: #D24D57;
+	color: #bfd583;
 	opacity: .5;
 	-moz-transform: translateY(-50%) translateX(-50%) rotate(90deg);
 	-ms-transform: translateY(-50%) translateX(-50%) rotate(90deg);
@@ -185,8 +186,12 @@ canvas {
 input:invalid, input:placeholder-shown {
 	box-shadow: 0 0 50px 1px red;
 }
-
+body {
+		font-family: "Operator Mono SSm A", "Operator Mono SSm B", 'Source Code Pro', Menlo, Consolas, Monaco, monospace;
+		color: #bfd583;
+}
 #debug {
+	display: block;
 	position: absolute;
 	float: left;
 	padding: 20px;
@@ -199,4 +204,18 @@ input:invalid, input:placeholder-shown {
 	font-size: 1em;
 	width: 250px;
 	height: auto;
+}
+
+#debug:empty {
+	display: none;
+    margin:0;
+    padding:0;
+    border:0;
+}
+#debug .debugvalue {
+	float: right;
+}
+
+.game-name{ 
+	font-family: "Operator Mono SSm A", "Operator Mono SSm B", 'Source Code Pro', Menlo, Consolas, Monaco, monospace;
 }

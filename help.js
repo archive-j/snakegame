@@ -25,7 +25,9 @@ function toggleVisiblity(div) {
   }
 }
 
-
+function debugValue(debugValue){
+  return '<div class="debugvalue">' + debugValue + "</div>";
+}
 
 Array.prototype.removeElement = function(element) {
   var index = this.indexOf(element);
