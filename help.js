@@ -3,27 +3,29 @@ function getRandomInt (max)  {
   return Math.floor (Math.random() * Math.floor (max));
 }
 
-function setVisibility(div, show) {
+function setVisibility(element, show) {
   if (show) {
 
-    div.style.display = "block"; //hidden 
-    div.visible = true;
+    element.style.display = "block"; //hidden
+    element.visible = true;
   } else {
 
-  div.style.display = "none"; //hidden
-    div.visible = false;
+  element.style.display = "none"; //hidden
+    element.visible = false;
   }
 }
 
-function toggleVisiblity(div) {
-  if (div.visible == true) {
+
+function toggleVisiblity(element) {
+  if (element.visible == true) {
     setVisibility(div, false);
-    div.visible = false;
+    element.visible = false;
   } else {
     setVisibility(div, true);
-    div.visible = true;
+    element.visible = true;
   }
 }
+
 
 function debugValue(debugValue){
   return '<div class="debugvalue">' + debugValue + "</div>";
@@ -35,3 +37,14 @@ Array.prototype.removeElement = function(element) {
     this.splice(index,1);
   }
 };
+
+function setPressed(element, pressed) {
+  if (pressed) {
+    element.classList.add("pressed"); //pressed
+    console.log("element.classList",element.classList);
+    element.pressed = true;
+  } else {
+    element.classList.remove("pressed"); //pressed
+    element.pressed = false;
+  }
+}

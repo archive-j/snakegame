@@ -8,6 +8,7 @@ var continueBtn = document.getElementById ('continueBtn');
 var btnStartgame = document.getElementById ('btn-startgame');
 var backBtn = document.getElementById ('btn-back');
 var debugDiv = document.getElementById("debug");
+var controlFeedback = document.getElementById ('control-feedback');
 
 var inputWidth;
 var inputHeight;
@@ -71,6 +72,10 @@ function setup() {
 
 
 function Game(setupData, i_canvas, startLength, ctrl) {
+//  console.log(document.getElementsByClassName('ctrl'));
+  this.ctrlElement = document.getElementsByClassName('ctrl');
+  //  console.log("ctrl",ctrlElement);
+
   this.fps = 3;// frame per second
   this.isRunning = true;
 
@@ -119,7 +124,7 @@ function Game(setupData, i_canvas, startLength, ctrl) {
 
 
   this.runGame = function() {
-    console.log(this.currentDir)
+  //  console.log(this.currentDir);
     this.clearBoard();
     this.moveSnake();
     this.drawBoard();
@@ -130,25 +135,31 @@ function Game(setupData, i_canvas, startLength, ctrl) {
   };
 
   this.keyUpFunc = function(evt) {
+
+
     switch (evt.keyCode) {
       case this.ctrl[1]:
         if (this.ctrlQueue.includes("LEFT")) {
           this.ctrlQueue.removeElement("LEFT");
+          setPressed(this.ctrlElement[1], false);
         }
         break;
       case this.ctrl[0]:
         if (this.ctrlQueue.includes("UP")) {
           this.ctrlQueue.removeElement("UP");
+          setPressed(this.ctrlElement[0], false);
         }
         break;
       case this.ctrl[3]:
         if (this.ctrlQueue.includes("RIGHT")) {
           this.ctrlQueue.removeElement("RIGHT");
+          setPressed(this.ctrlElement[3], false);
         }
         break;
       case this.ctrl[2]:
         if (this.ctrlQueue.includes("DOWN")) {
           this.ctrlQueue.removeElement("DOWN");
+          setPressed(this.ctrlElement[2], false);
         }
         break;
     }
@@ -167,6 +178,8 @@ function Game(setupData, i_canvas, startLength, ctrl) {
 
         if (!this.ctrlQueue.includes("UP")) {
           this.ctrlQueue.push("UP");
+          console.log("this.ctrlElement[0]",this.ctrlElement[0]);
+          setPressed(this.ctrlElement[0], true);
         }
 
     //    this.nextVx = 0; // UP
@@ -177,6 +190,7 @@ function Game(setupData, i_canvas, startLength, ctrl) {
 
         if (!this.ctrlQueue.includes("LEFT")) {
           this.ctrlQueue.push("LEFT");
+          setPressed(this.ctrlElement[1], true);
         }
 
   //      this.nextVx = -1; //  LEFT
@@ -187,6 +201,7 @@ function Game(setupData, i_canvas, startLength, ctrl) {
 
         if (!this.ctrlQueue.includes("DOWN")) {
           this.ctrlQueue.push("DOWN");
+          setPressed(this.ctrlElement[2], true);
         }
 //        this.nextVx = 0; // DOWN
 //        this.nextVy = 1;
@@ -195,6 +210,7 @@ function Game(setupData, i_canvas, startLength, ctrl) {
 
         if (!this.ctrlQueue.includes("RIGHT")) {
           this.ctrlQueue.push("RIGHT");
+          setPressed(this.ctrlElement[3], true);
         }
 
   //      this.nextVx = 1; // RIGHT
