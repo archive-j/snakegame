@@ -50,7 +50,7 @@ function setup() {
         'mapUnit': parseInt(inputUnit.value),
       };
 
-      if(validateInput(inputs)) {
+      if (validateInput(inputs)) {
          game = new Game(gameData, canvas, 2, [87, 65, 83, 68]); //WASD
          gameIsRunning = game.isRunning;
          game.generateFood();
@@ -96,6 +96,7 @@ function Game(setupData, i_canvas, startLength, ctrl) {
   this.sizeX = setupData.mapWidth;
   this.sizeY = setupData.mapHeight;
   this.unit = setupData.mapUnit;
+
   this.canvas.width = this.sizeX * this.unit; // a pálya méretének beállítása
   this.canvas.height = this.sizeY * this.unit;
   this.px =  getRandomInt(this.sizeX); //snake on the middle
@@ -114,8 +115,6 @@ function Game(setupData, i_canvas, startLength, ctrl) {
     //document.addEventListener('keydown', snake2.keyPushFunc.bind(snake2)); // fgv referencia-t vár
     // document.addEventListener('keydown', function(e) {
     //   snake.keyPushFunc(e);
-
-
 
   this.keyUpFunc = function(evt) {
     switch (evt.keyCode) {
@@ -324,8 +323,6 @@ function Game(setupData, i_canvas, startLength, ctrl) {
       "<br> Current direction: " + debugValue(this.currentDir);
   };
 
-
-
   this.clear = function() {
     this.cxt.clearRect (0, 0, this.canvas.width, this.canvas.height);
   };
@@ -402,9 +399,7 @@ function interfaceCtrl(evt) {
 
 
  function drawCircle(posX, posY, color, size, offset) {
-  if (typeof offset === 'undefined' || !offset) {
-    var offset = 0;
-  }
+  if (typeof offset === 'undefined' || !offset) var offset = 0;
   cxt.fillStyle = color;
   cxt.beginPath();
   cxt.arc(posX * size + size/2 + offset, posY * size + size/2 + offset,  size/2 - 2 * offset, 0, Math.PI*2, true);
@@ -412,16 +407,11 @@ function interfaceCtrl(evt) {
   cxt.fill();
   }
 
-// drawPixel(10,10, "black", unit);
-
 function drawPixel(posX, posY, color, size, offset) {
-  if (typeof offset === 'undefined' || !offset)  {var offset = 0;}
+  if (typeof offset === 'undefined' || !offset) var offset = 0;
   cxt.fillStyle = color;
   cxt.fillRect (posX * size + offset, posY * size + offset, size - 2 * offset, size - 2 * offset);
-  // l("size:", posX*size+offset);
-  // l("offset:", offset);
 }
-
 
 function validateInput(inputs) {
   console.log("inputs",inputs);
