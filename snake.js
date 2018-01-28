@@ -20,16 +20,6 @@ var gameData;
 var snake, snake2;
 var gameIsRunning = false;
 
-// var newObjecting = {
-// //  snake: snake, //  snake, //Egyenértékű
-//
-//   shit: "kaka",
-//   szam: 3,
-//   init: function(sizeX,sizeY){},
-// //  init(sizeX,sizeY){},
-//   szam1: 5
-// };
-
 setup();
 
 function setup() {
