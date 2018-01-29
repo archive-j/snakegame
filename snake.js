@@ -30,8 +30,6 @@ function GameUI() {
 
 
     var inputA = document.getElementById("switch_left");
-    autoCalculateUnit = inputA.value;
-    console.log(autoCalculateUnit);
 
 
     var outputU = document.getElementById("valueU");
@@ -48,7 +46,8 @@ function GameUI() {
     };
     inputWidth.oninput = function() {
         outputW.innerHTML = this.value;
-        if (autoCalculateUnit){
+        console.log(inputA.value);
+        if (inputA.value){
           console.log("baz",600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5));
             inputUnit.value = 600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5);
             outputU.innerHTML = inputUnit.value;
@@ -56,7 +55,7 @@ function GameUI() {
     };
     inputHeight.oninput = function() {
         outputH.innerHTML = this.value;
-        if (autoCalculateUnit){
+        if (inputA.value){
           console.log("baz",600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5));
           inputUnit.value = 600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5);
           outputU.innerHTML = inputUnit.value;
@@ -131,7 +130,7 @@ function GameUI() {
 
           break;
     // Retrieve the object from storage
-        case "gameIsRunning":
+        case "showBoard":
           if(typeof(this.game) !== "undefined") this.game.continueGame();
           setVisibility(menu, false);
           setVisibility(newGameMenu, false);
@@ -150,10 +149,10 @@ function GameUI() {
           switch  (this.currentState) {
             case "mainMenuScreen":
             if(typeof(this.game) !== "undefined"){
-              this.stateMachine ("gameIsRunning");
+              this.stateMachine ("showBoard");
               break;
             }
-            case "gameIsRunning":
+            case "showBoard":
               this.stateMachine ("mainMenuScreen");
               break;
             }
@@ -169,8 +168,10 @@ function GameUI() {
     }.bind(this));
 
     continueBtn.addEventListener ("click", function() {
-      if (this.game.IsRunning){
-        this.stateMachine("gameIsRunning");
+
+        console.log(typeof(this.game.isRunning));
+      if (this.game.isRunning){
+        this.stateMachine("showBoard");
       }
     }.bind(this));
 
@@ -199,7 +200,7 @@ function GameUI() {
          document.addEventListener('keyup', function(e) {
             this.game.keyUpFunc(e);
            }.bind(this));
-         this.stateMachine("gameIsRunning");
+         this.stateMachine("showBoard");
       }
     }.bind(this));
 
