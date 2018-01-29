@@ -225,11 +225,7 @@ Game.prototype.moveSnake = function() {
     this.py = 0;
   }
   
- this.trail.push ({x:this.px,y:this.py});
-  while (this.snkLength<this.trail.length) {
-    this.map[this.trail[0].x][this.trail[0].y] = "empty";
-    this.trail.shift();
-  }
+
   
   for (var i = 0; i <   this.trail.length; i++) {
     this.map[this.px][this.py] = "snakeHead";
@@ -240,7 +236,11 @@ Game.prototype.moveSnake = function() {
       this.score =  0;}
   }
 
- 
+  this.trail.push ({x:this.px,y:this.py});
+  while (this.snkLength<this.trail.length) {
+    this.map[this.trail[0].x][this.trail[0].y] = "empty";
+    this.trail.shift();
+  }
 
   // if snake eat the food
   if (this.px === this.fx && this.py === this.fy) {
