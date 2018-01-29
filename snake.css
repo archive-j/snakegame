@@ -339,16 +339,3 @@ input.cmn-toggle-round:checked + label:before {
 input.cmn-toggle-round:checked + label:after {
   margin-left: 60px;
 }
-
-.cmn-toggle {
-  position: absolute;
-  margin-left: -9999px;
-  visibility: hidden;
-}
-.cmn-toggle + label {
-  display: block;
-  position: relative;
-  cursor: pointer;
-  outline: none;
-  user-select: none;
-}

@@ -29,33 +29,32 @@ function GameUI() {
     let inputUnit = document.getElementById('inputUnit');
 
 
-    var inputA = document.getElementById("switch_left");
+    var inputA = document.getElementById("switch");
 
 
     var outputU = document.getElementById("valueU");
-    var outputW = document.getElementById("valueW");
-    var outputH = document.getElementById("valueH");
-
     outputU.innerHTML = inputUnit.value; // Display the default slider value
+    var outputW = document.getElementById("valueW");
     outputW.innerHTML = inputHeight.value; // Display the default slider value
+    var outputH = document.getElementById("valueH");
     outputH.innerHTML = inputWidth.value; // Display the default slider value
 
     // Update the current slider value (each time you drag the slider handle)
     inputUnit.oncuechange  = function() {
         outputU.innerHTML = this.value;
     };
+
     inputWidth.oninput = function() {
         outputW.innerHTML = this.value;
-        console.log(inputA.value);
-        if (inputA.value){
-          console.log("baz",600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5));
+        console.log(inputA.checked);
+        if (inputA.checked){
             inputUnit.value = 600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5);
             outputU.innerHTML = inputUnit.value;
         }
     };
     inputHeight.oninput = function() {
         outputH.innerHTML = this.value;
-        if (inputA.value){
+        if (inputA.checked){
           console.log("baz",600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5));
           inputUnit.value = 600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5);
           outputU.innerHTML = inputUnit.value;
