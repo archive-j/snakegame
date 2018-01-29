@@ -224,7 +224,9 @@ Game.prototype.moveSnake = function() {
   if (this.py>this.sizeY-1) {
     this.py = 0;
   }
+  
 
+  
   for (var i = 0; i <   this.trail.length; i++) {
     this.map[this.px][this.py] = "snakeHead";
     this.map[this.trail[i].x][this.trail[i].y] = "snake";

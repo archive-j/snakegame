@@ -55,7 +55,7 @@ function GameUI() {
     inputHeight.oninput = function() {
         outputH.innerHTML = this.value;
         if (inputA.checked){
-          console.log("baz",600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5));
+          console.log(600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5));
           inputUnit.value = 600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5);
           outputU.innerHTML = inputUnit.value;
         }
