@@ -1,6 +1,6 @@
 //SYMBOL
 
-function Game(setupData, i_canvas, startLength, ctrl) {
+function Game(setupData, i_canvas, startLength, ctrl, interFace) {
   this.ctrlFdbElement = document.getElementsByClassName('ctrl');
   this.isRunning = true;
   //Save to the local storage
@@ -9,13 +9,16 @@ function Game(setupData, i_canvas, startLength, ctrl) {
 
   this.canvas = i_canvas;
   this.cxt = this.canvas.getContext ("2d");
-
+  this.debugDiv = interFace[0];
+  this.scoreDiv = interFace[1];
   this.ctrl = ctrl;
   this.snkLength = startLength;
   this.playerName = setupData.name;
+
   this.sizeX = setupData.mapWidth;
   this.sizeY = setupData.mapHeight;
   this.unit = setupData.mapUnit;
+  this.fps = setupData.difficulty;// frame per second
 
   this.canvas.width = this.sizeX * this.unit; // a pálya méretének beállítása
   this.canvas.height = this.sizeY * this.unit;
@@ -26,11 +29,10 @@ function Game(setupData, i_canvas, startLength, ctrl) {
   this.nextVx = 1;
   this.nextVy = 0;
   this.trail = [];
-  this.fps = 4;// frame per second
+
   this.score =  0;
   // map 0 empty 1 snake trail 2 snake head 9 food
   this.map = new Array(this.sizeX).fill().map(()=>new Array(this.sizeY).fill(0)); // empty map
-
 
   this.ctrlQueue = [];
   this.ctrlQueValid = [];
@@ -139,7 +141,7 @@ Game.prototype.getDirVector = function(dir) {
   }
 };
 
-Game.prototype.getCurrentDir = function() {
+Game.prototype.getCurrentDirinString = function() {
   if (this.vx === 0 && this.vy === -1 ){
     this.currentDir = "UP";
   }
@@ -174,12 +176,10 @@ Game.prototype.validateDir = function() {
 };
 
 Game.prototype.moveSnake = function() {
-  console.log("movesnake1 before snkLength",this.snkLength);
-
-    // increment position by speed
+  // read next position and increment position by speed
   this.vx = this.nextVx;
   this.vy = this.nextVy;
-  this.getCurrentDir();
+  this.getCurrentDirinString();
 
   // move snake
   this.px += this.vx;
@@ -223,12 +223,11 @@ Game.prototype.moveSnake = function() {
     this.snkLength++;// growing snake
     this.score++; //  plus 1 point
   }
-    console.log("movesnake after snkLength",this.snkLength);
 
   this.trail.push ({x:this.px,y:this.py});
 
 
-  debugDiv.innerHTML =
+  this.debugDiv.innerHTML =
     '<div class="text-center">Debug</div>' +
     "<br>Position X: " + createDivForDebug(this.px) +
     "<br>Position Y: " + createDivForDebug(this.py) +
@@ -243,7 +242,7 @@ Game.prototype.moveSnake = function() {
 };
 
 Game.prototype.drawBoard = function() {
-  scoreDiv.innerText = this.playerName + "'s score: " + this.score;
+  this.scoreDiv.innerText = this.playerName + "'s score: " + this.score;
 
   for (var x=0;x < this.sizeX;x++) {
     for (var y=0;y < this.sizeY;y++)  {
@@ -291,15 +290,15 @@ Game.prototype.generateFood = function() {
 
 Game.prototype.drawCircle = function(posX, posY, color, size, offset) {
   if (typeof offset === 'undefined' || !offset) var offset = 0;
-  cxt.fillStyle = color;
-  cxt.beginPath();
-  cxt.arc(posX * size + size/2 + offset, posY * size + size/2 + offset,  size/2 - 2 * offset, 0, Math.PI*2, true);
-  cxt.closePath();
-  cxt.fill();
+  this.cxt.fillStyle = color;
+  this.cxt.beginPath();
+  this.cxt.arc(posX * size + size/2 + offset, posY * size + size/2 + offset,  size/2 - 2 * offset, 0, Math.PI*2, true);
+  this.cxt.closePath();
+  this.cxt.fill();
 };
 
 Game.prototype.drawPixel = function(posX, posY, color, size, offset) {
   if (typeof offset === 'undefined' || !offset) var offset = 0;
-  cxt.fillStyle = color;
-  cxt.fillRect (posX * size + offset, posY * size + offset, size - 2 * offset, size - 2 * offset);
+  this.cxt.fillStyle = color;
+  this.cxt.fillRect (posX * size + offset, posY * size + offset, size - 2 * offset, size - 2 * offset);
 };

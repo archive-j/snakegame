@@ -2,13 +2,6 @@
 
 //flag leütés felengedés törlés
 
-var menuMain = document.getElementById ('menu');
-var scoreDiv = document.getElementById ('score');
-var debugDiv = document.getElementById("debug");
-var controlFeedback = document.getElementById ('control-feedback');
-
-var canvas = document.querySelector ('canvas');
-var cxt = canvas.getContext ("2d");
 
 
 
@@ -18,49 +11,77 @@ var cxt = canvas.getContext ("2d");
 var gameUI = new GameUI();
 
 function GameUI() {
+    const menuMain = document.getElementById ('menu');
+    const scoreDiv = document.getElementById ('score');
+    const debugDiv = document.getElementById("debug");
+    const controlFeedback = document.getElementById ('control-feedback');
+
+    const canvas = document.querySelector ('canvas');
+    const cxt = canvas.getContext ("2d");
     const newGameBtn = document.getElementById ('newGame-btn');
     const highScoreBtn = document.getElementById ('highScore-btn');
     const continueBtn = document.getElementById ('continue-btn');
     const startgameBtn = document.getElementById ('startgame-btn');
     const backBtn = document.getElementById ('back-btn');
-    let inputWidth = document.getElementById('inputCanvasWidth');
-    let inputHeight = document.getElementById('inputCanvasHeight');
-    let inputPlayersName = document.getElementById('inputPlayersName');
-    let inputUnit = document.getElementById('inputUnit');
 
+    this.interFace = [debugDiv, scoreDiv];
+    console.log("this.interFace",this.interFace);
 
-    var inputA = document.getElementById("switch");
+    const inputPlayersName = document.getElementById('inputPlayersName');
+    const inputDifficulty = document.getElementById('inputDifficulty');
+    const inputUnit = document.getElementById('inputUnit');
+    const inputWidth = document.getElementById('inputCanvasWidth');
+    const inputHeight = document.getElementById('inputCanvasHeight');
+    const inputAutoSize = document.getElementById("switch"); // switch for auto pixel size
 
-
-    var outputU = document.getElementById("valueU");
-    outputU.innerHTML = inputUnit.value; // Display the default slider value
-    var outputW = document.getElementById("valueW");
-    outputW.innerHTML = inputHeight.value; // Display the default slider value
-    var outputH = document.getElementById("valueH");
-    outputH.innerHTML = inputWidth.value; // Display the default slider value
-
-    // Update the current slider value (each time you drag the slider handle)
-    inputUnit.oncuechange  = function() {
-        outputU.innerHTML = this.value;
+    //Auto size switch changing detection
+    inputAutoSize.onchange  = function() {
+        console.log("Hello");
+        inputUnit.disabled = inputAutoSize.checked; // if checked dont let change size input
+      if (inputAutoSize.checked){
+          inputUnit.value = 600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5);
+          inputUnit.disabled = true;
+          console.log("disabled?", outputU.disabled);
+          outputU.innerHTML = this.value;
+      }
     };
 
+    const outputD = document.getElementById("valueD");
+    outputD.innerHTML = inputDifficulty.value; // Display the default slider value
+    inputDifficulty.oninput  = function() {
+        outputD.innerHTML = inputDifficulty.value;
+    };
+
+    // Update the current slider value (each time you drag the slider handle)
+    const outputU = document.getElementById("valueU"); //pixel size
+    outputU.innerHTML = inputUnit.value; // Display the default slider value
+
+    inputUnit.oninput  = function() {
+      console.log(inputAutoSize.checked);
+        outputU.innerHTML = inputUnit.value;
+    };
+
+    const outputW = document.getElementById("valueW");
+    outputW.innerHTML = inputHeight.value; // Display the default slider value
     inputWidth.oninput = function() {
         outputW.innerHTML = this.value;
-        console.log(inputA.checked);
-        if (inputA.checked){
+        console.log(inputAutoSize.checked);
+        if (inputAutoSize.checked){
             inputUnit.value = 600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5);
             outputU.innerHTML = inputUnit.value;
         }
     };
+
+    const outputH = document.getElementById("valueH");
+    outputH.innerHTML = inputWidth.value; // Display the default slider value
     inputHeight.oninput = function() {
         outputH.innerHTML = this.value;
-        if (inputA.checked){
+        if (inputAutoSize.checked){
           console.log(600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5));
           inputUnit.value = 600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5);
           outputU.innerHTML = inputUnit.value;
         }
     };
-
 
     this.gameStartData;
     this.gameStarted = false;
@@ -125,6 +146,7 @@ function GameUI() {
             inputWidth.value = this.gameStartData.mapWidth;
             inputHeight.value = this.gameStartData.mapHeight;
           	inputUnit.value = this.gameStartData.mapUnit;
+            inputDifficulty.value = this.gameStartData.difficulty;
           }
 
           break;
@@ -188,8 +210,9 @@ function GameUI() {
           'mapWidth': parseInt(inputWidth.value),
           'mapHeight': parseInt(inputHeight.value),
           'mapUnit': parseInt(inputUnit.value),
+          'difficulty' : inputDifficulty.value
         };
-         this.game = new Game(this.gameStartData, canvas, 2, [87, 65, 83, 68]); //WASD
+         this.game = new Game(this.gameStartData, canvas, 2, [87, 65, 83, 68], this.interFace); //WASD
          console.log("this.game",this.game);
          this.gameStarted = this.game.isRunning;
          this.game.generateFood();

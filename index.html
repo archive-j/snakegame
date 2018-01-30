@@ -42,6 +42,15 @@
         </div>
 
         <div class="row">
+          <div class="form-group col">
+            <div class="slidecontainer">
+              <label for="inputDifficulty">Diff (1-10): <span id="valueD"></span></label>
+              <input type="range" min="3" max="10" value="3" class="slider" id="inputDifficulty">
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
           <div class="form-group col-8">
             <div class="slidecontainer">
             	<label for="inputUnit">Map Pixel Size (1-60px): <span id="valueU"></span>px </label>
@@ -49,13 +58,12 @@
             </div>
 	        </div>
 
+
           <div class="row">
-            <div class="form-group switch-field col">
-                <div class="switch-title">Auto-Size</div>
-              	<input type="radio" id="switch" name="switch_2" value="yes" checked/>
-               	<label for="switch_left">Yes</label>
-               	<input type="radio" id="switch_right" name="switch_2" value="no" />
-               	<label for="switch_right">No</label>
+            <div class="form-group switch-cont col">
+                <div class="switch-title"></div>
+              	<input type="checkbox" id="switch" name="switch"/>
+                <label for="switch"></label>
             </div>
         </div>
 
