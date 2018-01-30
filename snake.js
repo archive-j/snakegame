@@ -36,10 +36,10 @@ function GameUI() {
 
     //Auto size switch changing detection
     inputAutoSize.onchange  = function() {
-        console.log("Hello");
-        inputUnit.disabled = inputAutoSize.checked; // if checked dont let change size input
+      console.log("Hello");
+      inputUnit.disabled = inputAutoSize.checked; // if checked dont let change size input
       if (inputAutoSize.checked){
-          inputUnit.value = 600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5);
+          inputUnit.value = 600/Math.pow(inputWidth.value*inputHeight.value,0.5);
           inputUnit.disabled = true;
           console.log("disabled?", outputU.disabled);
           outputU.innerHTML = this.value;
@@ -57,7 +57,7 @@ function GameUI() {
     outputU.innerHTML = inputUnit.value; // Display the default slider value
 
     inputUnit.oninput  = function() {
-      console.log(inputAutoSize.checked);
+    //  console.log(inputAutoSize.checked);
         outputU.innerHTML = inputUnit.value;
     };
 
@@ -65,7 +65,7 @@ function GameUI() {
     outputW.innerHTML = inputHeight.value; // Display the default slider value
     inputWidth.oninput = function() {
         outputW.innerHTML = this.value;
-        console.log(inputAutoSize.checked);
+    //    console.log(inputAutoSize.checked);
         if (inputAutoSize.checked){
             inputUnit.value = 600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5);
             outputU.innerHTML = inputUnit.value;
@@ -77,7 +77,7 @@ function GameUI() {
     inputHeight.oninput = function() {
         outputH.innerHTML = this.value;
         if (inputAutoSize.checked){
-          console.log(600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5));
+    //      console.log(600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5));
           inputUnit.value = 600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5);
           outputU.innerHTML = inputUnit.value;
         }
@@ -86,8 +86,6 @@ function GameUI() {
     this.gameStartData;
     this.gameStarted = false;
     //ADD EVENT LISTENERS FOR BUTTONS
-
-
     this.validateInput = function(inputFields) {
       //console.log("inputs",inputs);
       var valid = true;
