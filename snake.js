@@ -63,7 +63,7 @@ function GameUI() {
 
 
     this.gameStartData;
-    this.gameIsRunning = false;
+    this.gameStarted = false;
     //ADD EVENT LISTENERS FOR BUTTONS
 
 
@@ -91,7 +91,7 @@ function GameUI() {
           setVisibility(newGameMenu, false);
           setVisibility(controlFeedback, false);
 
-          if (this.gameIsRunning) {
+          if (this.gameStarted) {
             setVisibility(scoreDiv, true);
             setVisibility(continueBtn, true);
           } else {
@@ -105,7 +105,7 @@ function GameUI() {
           setVisibility(canvas, false);
           setVisibility(newGameMenu, true);
 
-          if (this.gameIsRunning) {
+          if (this.gameStarted) {
             setVisibility(scoreDiv, true);
           }
 
@@ -191,7 +191,7 @@ function GameUI() {
         };
          this.game = new Game(this.gameStartData, canvas, 2, [87, 65, 83, 68]); //WASD
          console.log("this.game",this.game);
-         this.gameIsRunning = this.game.isRunning;
+         this.gameStarted = this.game.isRunning;
          this.game.generateFood();
          document.addEventListener('keydown', function(e) {
             this.game.keyDownFunc(e);

@@ -1,4 +1,11 @@
 
+Array.prototype.removeElement = function(element) {
+  var index = this.indexOf(element);
+  if (index > -1){
+    this.splice(index,1);
+  }
+};
+
 function getRandomInt (max)  {
   return Math.floor (Math.random() * Math.floor (max));
 }
@@ -27,13 +34,6 @@ function toggleVisiblity(element) {
 function createDivForDebug(debugValue){
   return '<div class="debugvalue">' + debugValue + "</div>";
 }
-
-Array.prototype.removeElement = function(element) {
-  var index = this.indexOf(element);
-  if (index > -1){
-    this.splice(index,1);
-  }
-};
 
 function setPressed(element, pressed) {
   if (pressed) {

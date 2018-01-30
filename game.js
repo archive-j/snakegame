@@ -1,9 +1,7 @@
 //SYMBOL
 
 function Game(setupData, i_canvas, startLength, ctrl) {
-//  console.log(document.getElementsByClassName('ctrl'));
   this.ctrlFdbElement = document.getElementsByClassName('ctrl');
-  //  console.log("ctrl",ctrlFdbElement);
   this.isRunning = true;
   //Save to the local storage
   localStorage.setItem('gameStartData', JSON.stringify(setupData));
@@ -28,17 +26,14 @@ function Game(setupData, i_canvas, startLength, ctrl) {
   this.nextVx = 1;
   this.nextVy = 0;
   this.trail = [];
-  this.fps = 9;// frame per second
+  this.fps = 4;// frame per second
   this.score =  0;
+  // map 0 empty 1 snake trail 2 snake head 9 food
+  this.map = new Array(this.sizeX).fill().map(()=>new Array(this.sizeY).fill(0)); // empty map
 
-  this.map = new Array(this.sizeX).fill().map(()=>new Array(this.sizeY).fill("empty"));
+
   this.ctrlQueue = [];
   this.ctrlQueValid = [];
-    //snake2 = new MySnake(sizeX, sizeY, 2, [38, 37, 12, 39]); //arrows
-    //document.addEventListener('keydown', snake2.keyPushFunc.bind(snake2)); // fgv referencia-t vár
-    // document.addEventListener('keydown', function(e) {
-    //   snake.keyPushFunc(e);
-
 };
 
 Game.prototype.pauseGame = function() {
@@ -102,7 +97,6 @@ Game.prototype.keyDownFunc = function(evt) {
         //console.log("this.ctrlFdbElement[0]",this.ctrlFdbElement[0]);
         setPressed(this.ctrlFdbElement[0], true);
       }
-
       break;
     case this.ctrl[1]:
       if (!this.ctrlQueue.includes("LEFT")) {
@@ -110,7 +104,6 @@ Game.prototype.keyDownFunc = function(evt) {
         setPressed(this.ctrlFdbElement[1], true);
       }
       break;
-
     case this.ctrl[2]:
       if (!this.ctrlQueue.includes("DOWN")) {
         this.ctrlQueue.push("DOWN");
@@ -125,8 +118,6 @@ Game.prototype.keyDownFunc = function(evt) {
       break;
     }
     this.validateDir();
-
-//    console.log("ctrlQue", this.ctrlQueue);
 };
 
 Game.prototype.getDirVector = function(dir) {
@@ -164,49 +155,33 @@ Game.prototype.getCurrentDir = function() {
 };
 
 Game.prototype.validateDir = function() {
+  // check if the snake can go this direction and set the last pusded btn to next direction
 
   this.ctrlQueValid = [];
   for (var i = 0; i < this.ctrlQueue.length; i++) {
     this.ctrlQueValid[i] = this.ctrlQueue[i];
   }
-  //console.log("validbefore",this.ctrlQueValid);
-//  console.log("vectorx",this.getDirVector(this.currentDir).vectorX);
   for (var i = 0; i < this.ctrlQueue.length; i++) {
     var vector = this.getDirVector(this.ctrlQueue[i]);
     if ((this.vx === (-1*vector.x) && this.vy === 0) || (this.vy === (-1*vector.y) && this.vx === 0)) {
-
-//  console.log("this.vx", this.vx, "vector.x",(-1*vector.x));
-//  console.log("this.vy", this.vy, "vector.y",(-1*vector.y));
-//  console.log("Remove");
-      //removeElement(this.ctrlQueValid, this.ctrlQueue[i]);
       this.ctrlQueValid.removeElement(this.ctrlQueue[i]);
-//      console.log("this.ctrlQueValid", this.ctrlQueValid, "i", i);
     }
   }
   if (this.ctrlQueValid.length > 0) {
-//    console.log("this.ctrlQueValid", this.ctrlQueValid);
-//    console.log("this.ctrlQueValid.length-1" ,this.ctrlQueValid.length-1);
-//    console.log("this.ctrlQueValid[this.ctrlQueValid.length-1]", this.ctrlQueValid[this.ctrlQueValid.length-1]);
-//    console.log("this.nextVx", this.getDirVector(this.ctrlQueValid[this.ctrlQueValid.length-1]).x);
-//    console.log("this.nextVy", this.getDirVector(this.ctrlQueValid[this.ctrlQueValid.length-1]).y);
     this.nextVx = this.getDirVector(this.ctrlQueValid[this.ctrlQueValid.length-1]).x;
     this.nextVy = this.getDirVector(this.ctrlQueValid[this.ctrlQueValid.length-1]).y;
   }
 };
 
 Game.prototype.moveSnake = function() {
+  console.log("movesnake1 before snkLength",this.snkLength);
 
-//Constrain to move the opposite direction
-  if (this.vx !== (-1*this.nextVx) || this.vy !== (-1*this.nextVy) ) {
-    this.vx = this.nextVx;
-    //  l(this.nextVx);
-    this.vy = this.nextVy;
-  }
+    // increment position by speed
+  this.vx = this.nextVx;
+  this.vy = this.nextVy;
   this.getCurrentDir();
-  //Get current status
-//  console.log("current vector",(this.getDirVector(this.currentDir)).x);
 
-  // increment position by speed
+  // move snake
   this.px += this.vx;
   this.py += this.vy;
 
@@ -224,22 +199,22 @@ Game.prototype.moveSnake = function() {
   if (this.py>this.sizeY-1) {
     this.py = 0;
   }
-  
 
-  
-  for (var i = 0; i <   this.trail.length; i++) {
-    this.map[this.px][this.py] = "snakeHead";
-    this.map[this.trail[i].x][this.trail[i].y] = "snake";
+  //console.log("current vector",(this.getDirVector(this.currentDir)).x);
+  while (this.snkLength<=this.trail.length) {
+  //  console.log("this.trail", this.trail);
+    this.map[this.trail[0].x][this.trail[0].y] = 0; // 0 for empty
+    this.trail.shift();
+  }
+
+  this.map[this.px][this.py] = 2; // 2 for Snake head
+
+  for (var i = 0; i < this.trail.length; i++) {
+    this.map[this.trail[i].x][this.trail[i].y] = 1; // 1 for snake trail
 
     if (this.px === this.trail[i].x && this.py === this.trail[i].y)  { //If snake meets itself length reduced to 1 and score reduced to 0
       this.snkLength = 1;
       this.score =  0;}
-  }
-
-  this.trail.push ({x:this.px,y:this.py});
-  while (this.snkLength<this.trail.length) {
-    this.map[this.trail[0].x][this.trail[0].y] = "empty";
-    this.trail.shift();
   }
 
   // if snake eat the food
@@ -248,6 +223,10 @@ Game.prototype.moveSnake = function() {
     this.snkLength++;// growing snake
     this.score++; //  plus 1 point
   }
+    console.log("movesnake after snkLength",this.snkLength);
+
+  this.trail.push ({x:this.px,y:this.py});
+
 
   debugDiv.innerHTML =
     '<div class="text-center">Debug</div>' +
@@ -258,7 +237,9 @@ Game.prototype.moveSnake = function() {
     "<br>FPS: " + createDivForDebug(this.fps) +
     "<br>Dir cmd: " + createDivForDebug(this.ctrlQueue) +
     "<br>Dir cmd valid: " + createDivForDebug(this.ctrlQueValid) +
-    "<br> Current direction: " + createDivForDebug(this.currentDir);
+    "<br> Current direction: " + createDivForDebug(this.currentDir)+
+    "<br> Trail length " + createDivForDebug(this.trail.length)+
+    "<br> snkLength " + createDivForDebug(this.snkLength);
 };
 
 Game.prototype.drawBoard = function() {
@@ -266,23 +247,23 @@ Game.prototype.drawBoard = function() {
 
   for (var x=0;x < this.sizeX;x++) {
     for (var y=0;y < this.sizeY;y++)  {
-      if (this.map[x][y] == "snake") {
+      if (this.map[x][y] === 1) { // snake trail
         this.drawPixel(x,y,"rgba(10,150,10,0.7)", this.unit, this.unit * 0.01);
       }
-        if (this.map[x][y] == "snakeHead") {
+        if (this.map[x][y] === 2) { //snake head
           this.drawPixel(x,y,"rgba(50,150,50,1)", this.unit);
         }
       //chess board pattern for empty fields
-      if (this.map[x][y] == "empty") {
+      if (this.map[x][y] === 0) {
         if ( (x + y) % 2 == 0) {
           this.drawPixel(x,y,"rgba(10,30,10,0.5)", this.unit);
         }
-        if ((x + y) % 2 == 1) { //chess table pattern
-          this.drawPixel(x,y,"rgba(10,10,10,0.5)", this.unit);
+        if ((x + y) % 2 === 1) { //chess table pattern
+          this.drawPixel(x,y,"rgba(10,26,10,0.5)", this.unit);
         }
       }
 
-      if (this.map[x][y] == "food")  {
+      if (this.map[x][y] === 9)  { // 9 draw food
         this.drawPixel(x, y, "rgba(170,0,0,1)", this.unit);
       }
     }
@@ -305,7 +286,7 @@ Game.prototype.generateFood = function() {
     this.generateFood();
   }
 
-  this.map[this.fx][this.fy] = "food"; // put food on the map
+  this.map[this.fx][this.fy] = 9; // put food on the map
 };
 
 Game.prototype.drawCircle = function(posX, posY, color, size, offset) {
