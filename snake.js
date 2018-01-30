@@ -8,6 +8,16 @@
 //Snake positions, speed, food position
 //var snake, snake2;
 
+GameUI.prototype.getButtons(buttons) {
+
+  for (var i = 0; i < buttons.length; i++) {
+    const newGameBtn = document.getElementById (buttons[i]+"-btn");
+  }
+
+  return ;
+};
+
+
 var gameUI = new GameUI();
 
 function GameUI() {
@@ -18,6 +28,8 @@ function GameUI() {
 
     const canvas = document.querySelector ('canvas');
     const cxt = canvas.getContext ("2d");
+
+    var buttuns = this.getButtons("newGame", "highScore", "continue", "startgame", "back");
     const newGameBtn = document.getElementById ('newGame-btn');
     const highScoreBtn = document.getElementById ('highScore-btn');
     const continueBtn = document.getElementById ('continue-btn');
@@ -97,88 +109,6 @@ function GameUI() {
 
 
 
-    this.stateMachine = function(nextState) {
-      console.log("nextState", nextState);
-      this.currentState = nextState;
-
-      switch (this.currentState) {
-        case "mainMenuScreen":
-          if(typeof(this.game) !== "undefined") this.game.pauseGame();
-
-          setVisibility(menu,true);
-          setVisibility(canvas, false);
-          setVisibility(newGameMenu, false);
-          setVisibility(controlFeedback, false);
-
-          if (this.gameStarted) {
-            setVisibility(scoreDiv, true);
-            setVisibility(continueBtn, true);
-          } else {
-            setVisibility(continueBtn, false);
-          }
-
-          break;
-
-        case "newGameCreatinMenu":
-          setVisibility(menu, false);
-          setVisibility(canvas, false);
-          setVisibility(newGameMenu, true);
-
-          if (this.gameStarted) {
-            setVisibility(scoreDiv, true);
-          }
-
-          ///local storage mentes
-
-          // Load preset values for setup creen
-          //console.log("localStorage.getItem('gameStartData') !== undefined",localStorage.getItem("gameStartData") !== undefined);
-          if (localStorage.getItem("gameStartData") !== undefined){
-          	this.gameStartData = localStorage.getItem('gameStartData');
-            console.log("localStorage.getItem('gameStartData')", localStorage.getItem('gameStartData'));
-      //      console.log("this.gameStartData" , this.gameStartData);
-          	this.gameStartData = JSON.parse(this.gameStartData);
-          	//console.log('gameStartData= : ', this.gameStartData);
-        //    console.log("inputPlayersName.value before",inputPlayersName.value);
-            inputPlayersName.value = this.gameStartData.name;
-        //    console.log("inputPlayersName.value after",inputPlayersName.value);
-            inputWidth.value = this.gameStartData.mapWidth;
-            inputHeight.value = this.gameStartData.mapHeight;
-          	inputUnit.value = this.gameStartData.mapUnit;
-            inputDifficulty.value = this.gameStartData.difficulty;
-          }
-
-          break;
-    // Retrieve the object from storage
-        case "showBoard":
-          if(typeof(this.game) !== "undefined") this.game.continueGame();
-          setVisibility(menu, false);
-          setVisibility(newGameMenu, false);
-          setVisibility(canvas, true);
-          setVisibility(controlFeedback, true);
-          break;
-
-        case "highScore":
-          break;
-      }
-    };
-
-    this.interfaceKeyDown = function(evt) {
-      switch (evt.keyCode) {
-        case 32: //pause on space
-          switch  (this.currentState) {
-            case "mainMenuScreen":
-            if(typeof(this.game) !== "undefined"){
-              this.stateMachine ("showBoard");
-              break;
-            }
-            case "showBoard":
-              this.stateMachine ("mainMenuScreen");
-              break;
-            }
-        break;
-      }
-    };
-
 
     this.stateMachine("mainMenuScreen");
     //var self = this;
@@ -226,4 +156,85 @@ function GameUI() {
 
     document.addEventListener ('keypress', this.interfaceKeyDown.bind(this));
 
+};
+
+
+GameUI.prototype.stateMachine = function(nextState) {
+  console.log("nextState", nextState);
+  this.currentState = nextState;
+
+  switch (this.currentState) {
+    case "mainMenuScreen":
+      if(typeof(this.game) !== "undefined") this.game.pauseGame();
+
+      setVisibility(menu,true);
+      setVisibility(canvas, false);
+      setVisibility(newGameMenu, false);
+      setVisibility(controlFeedback, false);
+
+      if (this.gameStarted) {
+        setVisibility(scoreDiv, true);
+        setVisibility(continueBtn, true);
+      } else {
+        setVisibility(continueBtn, false);
+      }
+
+      break;
+
+    case "newGameCreatinMenu":
+      setVisibility(menu, false);
+      setVisibility(canvas, false);
+      setVisibility(newGameMenu, true);
+
+      if (this.gameStarted) {
+        setVisibility(scoreDiv, true);
+      }
+
+      // Load preset values for setup creen
+      //console.log("localStorage.getItem('gameStartData') !== undefined",localStorage.getItem("gameStartData") !== undefined);
+      if (localStorage.getItem("gameStartData") !== undefined){
+      	this.gameStartData = localStorage.getItem('gameStartData');
+        console.log("localStorage.getItem('gameStartData')", localStorage.getItem('gameStartData'));
+  //      console.log("this.gameStartData" , this.gameStartData);
+      	this.gameStartData = JSON.parse(this.gameStartData);
+      	//console.log('gameStartData= : ', this.gameStartData);
+    //    console.log("inputPlayersName.value before",inputPlayersName.value);
+        inputPlayersName.value = this.gameStartData.name;
+    //    console.log("inputPlayersName.value after",inputPlayersName.value);
+        inputWidth.value = this.gameStartData.mapWidth;
+        inputHeight.value = this.gameStartData.mapHeight;
+      	inputUnit.value = this.gameStartData.mapUnit;
+        inputDifficulty.value = this.gameStartData.difficulty;
+      }
+
+      break;
+// recieve the object from storage
+    case "showBoard":
+      if(typeof(this.game) !== "undefined") this.game.continueGame();
+      setVisibility(menu, false);
+      setVisibility(newGameMenu, false);
+      setVisibility(canvas, true);
+      setVisibility(controlFeedback, true);
+      break;
+
+    case "highScore":
+      break;
+  }
+};
+
+GameUI.prototype.interfaceKeyDown = function(evt) {
+  switch (evt.keyCode) {
+    case 32: //pause on space
+      switch  (this.currentState) {
+        case "mainMenuScreen":
+        if(typeof(this.game) !== "undefined"){
+          this.stateMachine ("showBoard");
+          break;
+        }
+        case "showBoard":
+          this.stateMachine ("mainMenuScreen");
+          break;
+        }
+    break;
+  }
 };
