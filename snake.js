@@ -8,115 +8,95 @@
 //Snake positions, speed, food position
 //var snake, snake2;
 
-GameUI.prototype.getButtons(buttons) {
-
-  for (var i = 0; i < buttons.length; i++) {
-    const newGameBtn = document.getElementById (buttons[i]+"-btn");
-  }
-
-  return ;
-};
-
-
-var gameUI = new GameUI();
 
 function GameUI() {
-    const menuMain = document.getElementById ('menu');
-    const scoreDiv = document.getElementById ('score');
-    const debugDiv = document.getElementById("debug");
-    const controlFeedback = document.getElementById ('control-feedback');
+    this.newGameMenu = document.getElementById ('newGameMenu');
+    this.menuMain = document.getElementById ('menu');
+    this.controlFeedback = document.getElementById ('control-feedback');
+    this.scoreDiv = document.getElementById ('score');
+    this.debugDiv = document.getElementById("debug");
 
-    const canvas = document.querySelector ('canvas');
-    const cxt = canvas.getContext ("2d");
+    this.canvas = document.querySelector ('canvas');
+    this.cxt = this.canvas.getContext ("2d");
 
-    var buttuns = this.getButtons("newGame", "highScore", "continue", "startgame", "back");
-    const newGameBtn = document.getElementById ('newGame-btn');
-    const highScoreBtn = document.getElementById ('highScore-btn');
-    const continueBtn = document.getElementById ('continue-btn');
-    const startgameBtn = document.getElementById ('startgame-btn');
-    const backBtn = document.getElementById ('back-btn');
+    this.newGameBtn = document.getElementById ('newGame-btn');
+    this.highScoreBtn = document.getElementById ('highScore-btn');
+    this.continueBtn = document.getElementById ('continue-btn');
+    this.startgameBtn = document.getElementById ('startgame-btn');
+    this.backBtn = document.getElementById ('back-btn');
 
-    this.interFace = [debugDiv, scoreDiv];
-    console.log("this.interFace",this.interFace);
 
-    const inputPlayersName = document.getElementById('inputPlayersName');
-    const inputDifficulty = document.getElementById('inputDifficulty');
-    const inputUnit = document.getElementById('inputUnit');
-    const inputWidth = document.getElementById('inputCanvasWidth');
-    const inputHeight = document.getElementById('inputCanvasHeight');
-    const inputAutoSize = document.getElementById("switch"); // switch for auto pixel size
-
-    //Auto size switch changing detection
-    inputAutoSize.onchange  = function() {
-      console.log("Hello");
-      inputUnit.disabled = inputAutoSize.checked; // if checked dont let change size input
-      if (inputAutoSize.checked){
-          inputUnit.value = 600/Math.pow(inputWidth.value*inputHeight.value,0.5);
-          inputUnit.disabled = true;
-          console.log("disabled?", outputU.disabled);
-          outputU.innerHTML = this.value;
-      }
-    };
-
-    const outputD = document.getElementById("valueD");
-    outputD.innerHTML = inputDifficulty.value; // Display the default slider value
-    inputDifficulty.oninput  = function() {
-        outputD.innerHTML = inputDifficulty.value;
-    };
+    newGameInputs = document.getElementsByTagName("input");
+    this.interFace = [this.debugDiv, this.scoreDiv];
+    this.inputPlayersName = newGameInputs[0];
+    this.inputDifficulty = newGameInputs[1];
+    this.inputUnit = newGameInputs[2];
+    this.inputAutoSize = newGameInputs[3]; // switch for auto pixel size
+    this.inputWidth = newGameInputs[4];
+    this.inputHeight = newGameInputs[5];
 
     // Update the current slider value (each time you drag the slider handle)
-    const outputU = document.getElementById("valueU"); //pixel size
-    outputU.innerHTML = inputUnit.value; // Display the default slider value
+    //PIXEL SIZE
+    this.outputU = document.getElementById("valueU");
+    this.outputU.innerHTML = this.inputUnit.value; // Display the default slider value
 
-    inputUnit.oninput  = function() {
+    //Auto size switch changing detection
+    this.inputAutoSize.onchange  = function() {
+      this.inputUnit.disabled = this.inputAutoSize.checked; // if checked dont let change size input
+        if (this.inputAutoSize.checked){
+          this.inputUnit.value = 600/Math.pow(this.inputWidth.value * this.inputHeight.value, 0.5);
+          this.outputU.innerHTML = this.inputUnit.value;
+          this.inputUnit.disabled = true;
+        }
+    }.bind(this);
+
+    // DIFFICULTY
+    this.outputD = document.getElementById("valueD");
+    this.outputD.innerHTML = this.inputDifficulty.value; // Display the default slider value
+    this.inputDifficulty.oninput  = function() {
+        this.outputD.innerHTML = this.inputDifficulty.value;
+    }.bind(this);
+
+    // Pixel Size change
+    this.inputUnit.oninput  = function() {
     //  console.log(inputAutoSize.checked);
-        outputU.innerHTML = inputUnit.value;
-    };
+        this.outputU.innerHTML = this.inputUnit.value;
+    }.bind(this);
 
-    const outputW = document.getElementById("valueW");
-    outputW.innerHTML = inputHeight.value; // Display the default slider value
-    inputWidth.oninput = function() {
-        outputW.innerHTML = this.value;
+    this.outputW = document.getElementById("valueW");
+    this.outputW.innerHTML = this.inputHeight.value; // Display the default slider value
+    this.inputWidth.oninput = function() {
+        this.outputW.innerHTML = this.inputWidth.value;
     //    console.log(inputAutoSize.checked);
-        if (inputAutoSize.checked){
-            inputUnit.value = 600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5);
-            outputU.innerHTML = inputUnit.value;
+        if (this.inputAutoSize.checked){
+            this.inputUnit.value = 600/Math.pow(this.inputWidth.value * this.inputHeight.value, 0.5);
+            this.outputU.innerHTML = this.inputUnit.value;
         }
-    };
+    }.bind(this);
 
-    const outputH = document.getElementById("valueH");
-    outputH.innerHTML = inputWidth.value; // Display the default slider value
-    inputHeight.oninput = function() {
-        outputH.innerHTML = this.value;
-        if (inputAutoSize.checked){
+    this.outputH = document.getElementById("valueH");
+    this.outputH.innerHTML = this.inputWidth.value; // Display the default slider value
+    this.inputHeight.oninput = function() {
+        this.outputH.innerHTML = this.inputHeight.value;
+        if (this.inputAutoSize.checked){
     //      console.log(600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5));
-          inputUnit.value = 600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5);
-          outputU.innerHTML = inputUnit.value;
+        this.inputUnit.value = 600/Math.pow(this.inputWidth.value * this.inputHeight.value, 0.5);
+          this.outputU.innerHTML = this.inputUnit.value;
         }
-    };
+    }.bind(this);
 
     this.gameStartData;
     this.gameStarted = false;
     //ADD EVENT LISTENERS FOR BUTTONS
-    this.validateInput = function(inputFields) {
-      //console.log("inputs",inputs);
-      var valid = true;
-      for (var i = 0; i < inputFields.length; i++) {
-        valid &= inputFields[i].checkValidity();
-      }
-      return valid;
-    };
-
-
 
 
     this.stateMachine("mainMenuScreen");
     //var self = this;
-    newGameBtn.addEventListener ("click", function() {
+    this.newGameBtn.addEventListener ("click", function() {
       this.stateMachine("newGameCreatinMenu");
     }.bind(this));
 
-    continueBtn.addEventListener ("click", function() {
+    this.continueBtn.addEventListener ("click", function() {
 
         console.log(typeof(this.game.isRunning));
       if (this.game.isRunning){
@@ -124,23 +104,27 @@ function GameUI() {
       }
     }.bind(this));
 
-    backBtn.addEventListener ("click", function() {
+    this.backBtn.addEventListener ("click", function() {
       this.stateMachine("mainMenuScreen");
     }.bind(this));
 
-    startgameBtn.addEventListener ("click", function() {
-      let inputFields = [inputWidth, inputHeight, inputUnit];
+    this.startgameBtn.addEventListener ("click", function() {
 
-      if (this.validateInput(inputFields)) {
+      //fix this
+      let inputFields = [this.inputWidth, this.inputHeight, this.inputUnit];
+
+      if (this.validateInput(newGameInputs)) {
         console.log("true");
+        console.log("inputPlayersName", this.inputPlayersName);
         this.gameStartData = {
-          'name': inputPlayersName.value,
-          'mapWidth': parseInt(inputWidth.value),
-          'mapHeight': parseInt(inputHeight.value),
-          'mapUnit': parseInt(inputUnit.value),
-          'difficulty' : inputDifficulty.value
+
+          'name': this.inputPlayersName.value,
+          'mapWidth': parseInt(this.inputWidth.value),
+          'mapHeight': parseInt(this.inputHeight.value),
+          'mapUnit': parseInt(this.inputUnit.value),
+          'difficulty' : this.inputDifficulty.value
         };
-         this.game = new Game(this.gameStartData, canvas, 2, [87, 65, 83, 68], this.interFace); //WASD
+         this.game = new Game(this.gameStartData, this.canvas, 2, [87, 65, 83, 68], this.interFace); //WASD
          console.log("this.game",this.game);
          this.gameStarted = this.game.isRunning;
          this.game.generateFood();
@@ -158,6 +142,14 @@ function GameUI() {
 
 };
 
+GameUI.prototype.validateInput = function(inputFields) {
+  //console.log("inputs",inputs);
+  var valid = true;
+  for (var i = 0; i < inputFields.length; i++) {
+    valid &= inputFields[i].checkValidity();
+  }
+  return valid;
+};
 
 GameUI.prototype.stateMachine = function(nextState) {
   console.log("nextState", nextState);
@@ -167,27 +159,27 @@ GameUI.prototype.stateMachine = function(nextState) {
     case "mainMenuScreen":
       if(typeof(this.game) !== "undefined") this.game.pauseGame();
 
-      setVisibility(menu,true);
-      setVisibility(canvas, false);
-      setVisibility(newGameMenu, false);
-      setVisibility(controlFeedback, false);
+      setVisibility(this.menuMain,true);
+      setVisibility(this.canvas, false);
+      setVisibility(this.newGameMenu, false);
+      setVisibility(this.controlFeedback, false);
 
       if (this.gameStarted) {
-        setVisibility(scoreDiv, true);
-        setVisibility(continueBtn, true);
+        setVisibility(this.scoreDiv, true);
+        setVisibility(this.continueBtn, true);
       } else {
-        setVisibility(continueBtn, false);
+        setVisibility(this.continueBtn, false);
       }
 
       break;
 
     case "newGameCreatinMenu":
-      setVisibility(menu, false);
-      setVisibility(canvas, false);
-      setVisibility(newGameMenu, true);
+      setVisibility(this.menuMain, false);
+      setVisibility(this.canvas, false);
+      setVisibility(this.newGameMenu, true);
 
       if (this.gameStarted) {
-        setVisibility(scoreDiv, true);
+        setVisibility(this.scoreDiv, true);
       }
 
       // Load preset values for setup creen
@@ -199,12 +191,12 @@ GameUI.prototype.stateMachine = function(nextState) {
       	this.gameStartData = JSON.parse(this.gameStartData);
       	//console.log('gameStartData= : ', this.gameStartData);
     //    console.log("inputPlayersName.value before",inputPlayersName.value);
-        inputPlayersName.value = this.gameStartData.name;
+        this.inputPlayersName.value = this.gameStartData.name;
     //    console.log("inputPlayersName.value after",inputPlayersName.value);
-        inputWidth.value = this.gameStartData.mapWidth;
-        inputHeight.value = this.gameStartData.mapHeight;
-      	inputUnit.value = this.gameStartData.mapUnit;
-        inputDifficulty.value = this.gameStartData.difficulty;
+        this.inputWidth.value = this.gameStartData.mapWidth;
+        this.inputHeight.value = this.gameStartData.mapHeight;
+      	this.inputUnit.value = this.gameStartData.mapUnit;
+        this.inputDifficulty.value = this.gameStartData.difficulty;
       }
 
       break;
@@ -212,9 +204,9 @@ GameUI.prototype.stateMachine = function(nextState) {
     case "showBoard":
       if(typeof(this.game) !== "undefined") this.game.continueGame();
       setVisibility(menu, false);
-      setVisibility(newGameMenu, false);
-      setVisibility(canvas, true);
-      setVisibility(controlFeedback, true);
+      setVisibility(this.newGameMenu, false);
+      setVisibility(this.canvas, true);
+      setVisibility(this.controlFeedback, true);
       break;
 
     case "highScore":
@@ -238,3 +230,6 @@ GameUI.prototype.interfaceKeyDown = function(evt) {
     break;
   }
 };
+
+
+var gameUI = new GameUI();
