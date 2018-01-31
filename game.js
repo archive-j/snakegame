@@ -1,27 +1,26 @@
 //SYMBOL
 
-function Game(setupData, i_canvas, startLength, ctrl, interFace) {
+function Game(setupData, canvas, startLength, ctrl, interFace) {
   this.ctrlFdbElement = document.getElementsByClassName('ctrl');
   this.isRunning = true;
   //Save to the local storage
-  localStorage.setItem('gameStartData', JSON.stringify(setupData));
-  console.log("GameSetupSavedToTheLocalStorage", setupData);
 
-  this.canvas = i_canvas;
-  this.cxt = this.canvas.getContext ("2d");
   this.debugDiv = interFace[0];
   this.scoreDiv = interFace[1];
   this.ctrl = ctrl;
   this.snkLength = startLength;
-  this.playerName = setupData.name;
 
+  this.playerName = setupData.name;
   this.sizeX = setupData.mapWidth;
   this.sizeY = setupData.mapHeight;
   this.unit = setupData.mapUnit;
   this.fps = setupData.difficulty;// frame per second
 
+  this.canvas = canvas;
+  this.cxt = this.canvas.getContext ("2d");
   this.canvas.width = this.sizeX * this.unit; // a pálya méretének beállítása
   this.canvas.height = this.sizeY * this.unit;
+
   this.px = getRandomInt(this.sizeX); //snake on the middle
   this.py = getRandomInt(this.sizeY); // this on the middle
   this.vx = 0;
@@ -29,7 +28,6 @@ function Game(setupData, i_canvas, startLength, ctrl, interFace) {
   this.nextVx = 1;
   this.nextVy = 0;
   this.trail = [];
-
   this.score =  0;
   // map 0 empty 1 snake trail 2 snake head 9 food
   this.map = new Array(this.sizeX).fill().map(()=>new Array(this.sizeY).fill(0)); // empty map

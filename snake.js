@@ -1,4 +1,3 @@
-
 function GameUI() {
     this.newGameMenu = document.getElementById ('newGameMenu');
     this.menuMain = document.getElementById ('menu');
@@ -17,73 +16,64 @@ function GameUI() {
 
     this.interFace = [this.debugDiv, this.scoreDiv];
 
+    //getting input fields
     newGameInputs = document.getElementsByTagName("input");
-    console.log("proba", this.csa);
-    for (var i = 0; i < newGameInputs.length; i++) { 
+    for (var i = 0; i < newGameInputs.length; i++) {
       this[newGameInputs[i].id] = newGameInputs[i];
     }
-    //
-    // this.inputPlayersName = newGameInputs[0];
-    // this.inputDifficulty = newGameInputs[1];
-    // this.inputUnit = newGameInputs[2];
-    // this.inputAutoSize = newGameInputs[3]; // switch for auto pixel size
-    // this.inputWidth = newGameInputs[4];
-    // this.inputHeight = newGameInputs[5];
 
     // Update the current slider value (each time you drag the slider handle)
     //PIXEL SIZE
-    this.outputU = document.getElementById("valueU");
-    this.outputU.innerHTML = this.inputUnit.value; // Display the default slider value
+    var outputP = document.getElementById("valueU");
+    outputP.innerHTML = this.inputPixelSize.value; // Display the default slider value
 
     //Auto size switch changing detection
-    this.inputAutoSize.onchange  = function() {
-      this.inputUnit.disabled = this.inputAutoSize.checked; // if checked dont let change size input
-        if (this.inputAutoSize.checked){
-          this.inputUnit.value = 600/Math.pow(this.inputWidth.value * this.inputHeight.value, 0.5);
-          this.outputU.innerHTML = this.inputUnit.value;
-          this.inputUnit.disabled = true;
+    inputAutoPixelSize.onchange  = function() {
+      inputPixelSize.disabled = inputAutoPixelSize.checked; // if checked dont let change size input
+        if (inputAutoPixelSize.checked){
+          inputPixelSize.value = 600/Math.pow(inputWidth.value * inputHeight.value, 0.5);
+          outputP.innerHTML = inputPixelSize.value;
+          inputPixelSize.disabled = true;
         }
-    }.bind(this);
+    };
 
     // DIFFICULTY
-    this.outputD = document.getElementById("valueD");
-    this.outputD.innerHTML = this.inputDifficulty.value; // Display the default slider value
-    this.inputDifficulty.oninput  = function() {
-        this.outputD.innerHTML = this.inputDifficulty.value;
-    }.bind(this);
+    var outputD = document.getElementById("valueD");
+    outputD.innerHTML = inputDifficulty.value; // Display the default slider value
+    inputDifficulty.oninput  = function() {
+        outputD.innerHTML = inputDifficulty.value;
+    } ;
 
     // Pixel Size change
-    this.inputUnit.oninput  = function() {
+    inputPixelSize.oninput  = function() {
     //  console.log(inputAutoSize.checked);
-        this.outputU.innerHTML = this.inputUnit.value;
-    }.bind(this);
+        outputP.innerHTML = inputPixelSize.value;
+    };
 
-    this.outputW = document.getElementById("valueW");
-    this.outputW.innerHTML = this.inputHeight.value; // Display the default slider value
-    this.inputWidth.oninput = function() {
-        this.outputW.innerHTML = this.inputWidth.value;
+    var outputW = document.getElementById("valueW");
+    outputW.innerHTML = inputHeight.value; // Display the default slider value
+    inputWidth.oninput = function() {
+        outputW.innerHTML = inputWidth.value;
     //    console.log(inputAutoSize.checked);
-        if (this.inputAutoSize.checked){
-            this.inputUnit.value = 600/Math.pow(this.inputWidth.value * this.inputHeight.value, 0.5);
-            this.outputU.innerHTML = this.inputUnit.value;
+        if (inputAutoSize.checked){
+            inputPixelSize.value = 600/Math.pow(inputWidth.value * inputHeight.value, 0.5);
+            outputP.innerHTML = inputPixelSize.value;
         }
-    }.bind(this);
+    };
 
-    this.outputH = document.getElementById("valueH");
-    this.outputH.innerHTML = this.inputWidth.value; // Display the default slider value
-    this.inputHeight.oninput = function() {
-        this.outputH.innerHTML = this.inputHeight.value;
-        if (this.inputAutoSize.checked){
+    var outputH = document.getElementById("valueH");
+    outputH.innerHTML = inputWidth.value; // Display the default slider value
+    inputHeight.oninput = function() {
+        outputH.innerHTML = inputHeight.value;
+        if (inputAutoSize.checked){
     //      console.log(600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5));
-        this.inputUnit.value = 600/Math.pow(this.inputWidth.value * this.inputHeight.value, 0.5);
-          this.outputU.innerHTML = this.inputUnit.value;
+        inputPixelSize.value = 600/Math.pow(inputWidth.value * inputHeight.value, 0.5);
+          outputP.innerHTML = inputPixelSize.value;
         }
-    }.bind(this);
+    };
 
-    this.gameStartData;
     this.gameStarted = false;
     //ADD EVENT LISTENERS FOR BUTTONS
-
 
     this.stateMachine("mainMenuScreen");
     //var self = this;
@@ -92,114 +82,99 @@ function GameUI() {
     }.bind(this));
 
     this.continueBtn.addEventListener ("click", function() {
-
-        console.log(typeof(this.game.isRunning));
-      if (this.game.isRunning){
-        this.stateMachine("showBoard");
-      }
+      if (this.game.isRunning) this.stateMachine("showBoard");
     }.bind(this));
 
     this.backBtn.addEventListener ("click", function() {
       this.stateMachine("mainMenuScreen");
     }.bind(this));
 
+    //Click on start button
     this.startgameBtn.addEventListener ("click", function() {
+      if (this.validateInputs(newGameInputs)) {
+        this.saveGameData();
+        this.game = new Game(this.gameStartData, this.canvas, 2, [87, 65, 83, 68], this.interFace); //WASD
+        //console.log("this.game",this.game);
+        this.game.generateFood();
+        this.gameStarted = this.game.isRunning;
 
-      //fix this
-      let inputFields = [this.inputWidth, this.inputHeight, this.inputUnit];
-
-      if (this.validateInput(newGameInputs)) {
-        console.log("true");
-        console.log("inputPlayersName", this.inputPlayersName);
-        this.gameStartData = {
-
-          'name': this.inputPlayersName.value,
-          'mapWidth': parseInt(this.inputWidth.value),
-          'mapHeight': parseInt(this.inputHeight.value),
-          'mapUnit': parseInt(this.inputUnit.value),
-          'difficulty' : this.inputDifficulty.value
-        };
-         this.game = new Game(this.gameStartData, this.canvas, 2, [87, 65, 83, 68], this.interFace); //WASD
-         console.log("this.game",this.game);
-         this.gameStarted = this.game.isRunning;
-         this.game.generateFood();
-
-         document.addEventListener('keydown', function(e) {
-            this.game.keyDownFunc(e);
-          }.bind(this));
-         document.addEventListener('keyup', function(e) {
-            this.game.keyUpFunc(e);
-           }.bind(this));
-         this.stateMachine("showBoard");
+        document.addEventListener('keydown', function(e) {
+          this.game.keyDownFunc(e);
+        }.bind(this));
+        document.addEventListener('keyup', function(e) {
+          this.game.keyUpFunc(e);
+        }.bind(this));
+        this.stateMachine("showBoard");
       }
     }.bind(this));
 
     document.addEventListener ('keypress', this.interfaceKeyDown.bind(this));
-
 };
 
-GameUI.prototype.validateInput = function(inputFields) {
-  //console.log("inputs",inputs);
+GameUI.prototype.validateInputs = function(inputsToCheck) {
   var valid = true;
-  for (var i = 0; i < inputFields.length; i++) {
-    valid &= inputFields[i].checkValidity();
+  for (var i = 0; i < inputsToCheck.length; i++) {
+    valid &= inputsToCheck[i].checkValidity();
   }
   return valid;
 };
 
 GameUI.prototype.stateMachine = function(nextState) {
-  console.log("nextState", nextState);
   this.currentState = nextState;
-
   switch (this.currentState) {
     case "mainMenuScreen":
       if(typeof(this.game) !== "undefined") this.game.pauseGame();
-
       setVisibility(this.menuMain, true);
       setVisibility(this.canvas, this.newGameMenu, this.controlFeedback, false);
-
       if (this.gameStarted) {
         setVisibility(this.scoreDiv, this.continueBtn, true);
       } else {
         setVisibility(this.continueBtn, false);
       }
-
       break;
-
     case "newGameCreatinMenu":
       setVisibility(this.menuMain, this.canvas, false);
       setVisibility(this.newGameMenu, true);
-
       if (this.gameStarted) {
         setVisibility(this.scoreDiv, true);
       }
-      // Load preset values for setup creen
-      //console.log("localStorage.getItem('gameStartData') !== undefined",localStorage.getItem("gameStartData") !== undefined);
-      if (localStorage.getItem("gameStartData") !== undefined){
-      	this.gameStartData = localStorage.getItem('gameStartData');
-        console.log("localStorage.getItem('gameStartData')", localStorage.getItem('gameStartData'));
-  //      console.log("this.gameStartData" , this.gameStartData);
-      	this.gameStartData = JSON.parse(this.gameStartData);
-      	//console.log('gameStartData= : ', this.gameStartData);
-    //    console.log("inputPlayersName.value before",inputPlayersName.value);
-        this.inputPlayersName.value = this.gameStartData.name;
-    //    console.log("inputPlayersName.value after",inputPlayersName.value);
-        this.inputWidth.value = this.gameStartData.mapWidth;
-        this.inputHeight.value = this.gameStartData.mapHeight;
-      	this.inputUnit.value = this.gameStartData.mapUnit;
-        this.inputDifficulty.value = this.gameStartData.difficulty;
-      }
-
+      this.loadGameData();
       break;
-// recieve the object from storage
     case "showBoard":
       if(typeof(this.game) !== "undefined") this.game.continueGame();
       setVisibility(this.menuMain, this.newGameMenu , false);
       setVisibility(this.canvas,this.controlFeedback, true);
       break;
-
     case "highScore":
       break;
+  }
+};
+
+GameUI.prototype.saveGameData = function(){
+  this.gameStartData = {
+    'name': this.inputPlayersName.value,
+    'mapWidth': parseInt(this.inputWidth.value),
+    'mapHeight': parseInt(this.inputHeight.value),
+    'mapUnit': parseInt(this.inputPixelSize.value),
+    'autoPixelSize': this.inputAutoPixelSize.checked,
+    'difficulty' : this.inputDifficulty.value
+  };
+  localStorage.setItem('gameStartData', JSON.stringify(this.gameStartData));
+  console.log("GameSetupSavedToTheLocalStorage", this.gameStartData);
+};
+
+GameUI.prototype.loadGameData = function(){
+  if (localStorage.getItem("gameStartData") !== undefined){
+    this.gameStartData = localStorage.getItem('gameStartData');
+    console.log("localStorage.getItem('gameStartData')", localStorage.getItem('gameStartData'));
+    this.gameStartData = JSON.parse(this.gameStartData);
+
+    this.inputPlayersName.value = this.gameStartData.name;
+    this.inputWidth.value = this.gameStartData.mapWidth;
+    this.inputHeight.value = this.gameStartData.mapHeight;
+    this.inputPixelSize.value = this.gameStartData.mapUnit;
+    this.inputAutoPixelSize.checked = this.gameStartData.autoPixelSize;
+    this.inputDifficulty.value = this.gameStartData.difficulty;
   }
 };
 
@@ -219,6 +194,5 @@ GameUI.prototype.interfaceKeyDown = function(evt) {
     break;
   }
 };
-
 
 var gameUI = new GameUI();
