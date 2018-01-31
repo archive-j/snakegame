@@ -1,14 +1,4 @@
 
-
-//flag leütés felengedés törlés
-
-
-
-
-//Snake positions, speed, food position
-//var snake, snake2;
-
-
 function GameUI() {
     this.newGameMenu = document.getElementById ('newGameMenu');
     this.menuMain = document.getElementById ('menu');
@@ -25,15 +15,20 @@ function GameUI() {
     this.startgameBtn = document.getElementById ('startgame-btn');
     this.backBtn = document.getElementById ('back-btn');
 
+    this.interFace = [this.debugDiv, this.scoreDiv];
 
     newGameInputs = document.getElementsByTagName("input");
-    this.interFace = [this.debugDiv, this.scoreDiv];
-    this.inputPlayersName = newGameInputs[0];
-    this.inputDifficulty = newGameInputs[1];
-    this.inputUnit = newGameInputs[2];
-    this.inputAutoSize = newGameInputs[3]; // switch for auto pixel size
-    this.inputWidth = newGameInputs[4];
-    this.inputHeight = newGameInputs[5];
+    console.log("proba", this.csa);
+    for (var i = 0; i < newGameInputs.length; i++) { 
+      this[newGameInputs[i].id] = newGameInputs[i];
+    }
+    //
+    // this.inputPlayersName = newGameInputs[0];
+    // this.inputDifficulty = newGameInputs[1];
+    // this.inputUnit = newGameInputs[2];
+    // this.inputAutoSize = newGameInputs[3]; // switch for auto pixel size
+    // this.inputWidth = newGameInputs[4];
+    // this.inputHeight = newGameInputs[5];
 
     // Update the current slider value (each time you drag the slider handle)
     //PIXEL SIZE
@@ -128,6 +123,7 @@ function GameUI() {
          console.log("this.game",this.game);
          this.gameStarted = this.game.isRunning;
          this.game.generateFood();
+
          document.addEventListener('keydown', function(e) {
             this.game.keyDownFunc(e);
           }.bind(this));

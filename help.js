@@ -27,8 +27,7 @@ function setVisibility(...args) {
   var elements = args;
   elements.pop();
   //set visbility for elements
-  for (var i = 0; i < elements.length; i++) {
-    console.log("hago", elements[i]);
+  for (var i = 0; i < elements.length; i++) { 
     if (show) {
       elements[i].style.display = "block"; //visible
       elements[i].visible = true;
