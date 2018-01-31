@@ -159,14 +159,11 @@ GameUI.prototype.stateMachine = function(nextState) {
     case "mainMenuScreen":
       if(typeof(this.game) !== "undefined") this.game.pauseGame();
 
-      setVisibility(this.menuMain,true);
-      setVisibility(this.canvas, false);
-      setVisibility(this.newGameMenu, false);
-      setVisibility(this.controlFeedback, false);
+      setVisibility(this.menuMain, true);
+      setVisibility(this.canvas, this.newGameMenu, this.controlFeedback, false);
 
       if (this.gameStarted) {
-        setVisibility(this.scoreDiv, true);
-        setVisibility(this.continueBtn, true);
+        setVisibility(this.scoreDiv, this.continueBtn, true);
       } else {
         setVisibility(this.continueBtn, false);
       }
@@ -174,14 +171,12 @@ GameUI.prototype.stateMachine = function(nextState) {
       break;
 
     case "newGameCreatinMenu":
-      setVisibility(this.menuMain, false);
-      setVisibility(this.canvas, false);
+      setVisibility(this.menuMain, this.canvas, false);
       setVisibility(this.newGameMenu, true);
 
       if (this.gameStarted) {
         setVisibility(this.scoreDiv, true);
       }
-
       // Load preset values for setup creen
       //console.log("localStorage.getItem('gameStartData') !== undefined",localStorage.getItem("gameStartData") !== undefined);
       if (localStorage.getItem("gameStartData") !== undefined){
@@ -203,10 +198,8 @@ GameUI.prototype.stateMachine = function(nextState) {
 // recieve the object from storage
     case "showBoard":
       if(typeof(this.game) !== "undefined") this.game.continueGame();
-      setVisibility(menu, false);
-      setVisibility(this.newGameMenu, false);
-      setVisibility(this.canvas, true);
-      setVisibility(this.controlFeedback, true);
+      setVisibility(this.menuMain, this.newGameMenu , false);
+      setVisibility(this.canvas,this.controlFeedback, true);
       break;
 
     case "highScore":

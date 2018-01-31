@@ -9,15 +9,33 @@ Array.prototype.removeElement = function(element) {
 function getRandomInt (max)  {
   return Math.floor (Math.random() * Math.floor (max));
 }
+//
+// function setVisibility(element, show) {
+//   if (show) {
+//     element.style.display = "block"; //visible
+//     element.visible = true;
+//   } else {
+//
+//   element.style.display = "none"; //hidden
+//     element.visible = false;
+//   }
+// }
 
-function setVisibility(element, show) {
-  if (show) {
-    element.style.display = "block"; //visible
-    element.visible = true;
-  } else {
-
-  element.style.display = "none"; //hidden
-    element.visible = false;
+function setVisibility(...args) {
+  var show = args[args.length-1];
+  //Get elements and drop show value
+  var elements = args;
+  elements.pop();
+  //set visbility for elements
+  for (var i = 0; i < elements.length; i++) {
+    console.log("hago", elements[i]);
+    if (show) {
+      elements[i].style.display = "block"; //visible
+      elements[i].visible = true;
+    } else {
+    elements[i].style.display = "none"; //hidden
+      elements[i].visible = false;
+    }
   }
 }
 
