@@ -1,21 +1,20 @@
 //SYMBOL
 
-function Game(setupData, canvas, startLength, ctrl, interFace) {
+function Game({ gameStartData, canvas, snakeLength, controlKeys, interFace, onGameEndAction }) {
   this.ctrlFdbElement = document.getElementsByClassName('ctrl');
-  this.isRunning = true;
   //Save to the local storage
-
+  this.endGameRequest = false;
   this.debugDiv = interFace[0];
   this.scoreDiv = interFace[1];
-  this.ctrl = ctrl;
-  this.snkLength = startLength;
-
-  this.playerName = setupData.name;
-  this.sizeX = setupData.mapWidth;
-  this.sizeY = setupData.mapHeight;
-  this.unit = setupData.mapUnit;
-  this.startFps = setupData.difficulty;// frame per second
-  this.fps = setupData.difficulty;// frame per second
+  this.ctrl = controlKeys;
+  this.snkLength = snakeLength;
+  this.onGameEndAction = onGameEndAction;
+  this.playerName = gameStartData.name;
+  this.sizeX = gameStartData.mapWidth;
+  this.sizeY = gameStartData.mapHeight;
+  this.unit = gameStartData.mapUnit;
+  this.startFps = gameStartData.difficulty;// frame per second
+  this.fps = gameStartData.difficulty;// frame per second
   this.speedChangeRequest = false;
 
   this.canvas = canvas;
@@ -39,11 +38,17 @@ function Game(setupData, canvas, startLength, ctrl, interFace) {
 };
 
 Game.prototype.pauseGame = function() {
-  console.log("this.SessionId", this.SessionId);
   if (this.SessionId) {
-    console.log("this.SessionId", this.SessionId);
     clearInterval(this.SessionId);
   } // pause game
+  this.isRunning = false;
+};
+
+Game.prototype.endGame = function() {
+  if (this.SessionId) {
+    clearInterval(this.SessionId);
+  } // pause game
+  console.log(this.endGameRequest);
 };
 
 Game.prototype.continueGame = function() {
@@ -60,7 +65,7 @@ Game.prototype.updateGame = function() {
   this.clearBoard();
   this.moveSnake();
   this.drawBoard();
-
+  this.isRunning = true;
 };
 
 Game.prototype.clearBoard = function() {
@@ -214,18 +219,18 @@ Game.prototype.moveSnake = function() {
     this.trail.shift();
   }
 
-  this.map[this.px][this.py] = 2; // 2 for Snake head
 
   for (var i = 0; i < this.trail.length; i++) {
+    this.map[this.px][this.py] = 2; // 2 for Snake head
     this.map[this.trail[i].x][this.trail[i].y] = 1; // 1 for snake trail
 
     if (this.px === this.trail[i].x && this.py === this.trail[i].y)  {
       //If snake meets itself length reduced to 1 and score reduced to 0
-      this.snkLength = 1;
-      this.score =  0;
-      this.fps = this.startFps;
+      this.onGameEndAction(this.score);
+    }
   }
-  }
+  console.log("csicska1");
+  this.trail.push ({x:this.px,y:this.py});
 
   // if snake eat the food
   if (this.px === this.fx && this.py === this.fy) {
@@ -234,8 +239,6 @@ Game.prototype.moveSnake = function() {
     this.generateFood(); // generate new apple pos
     this.speedChangeRequest = true;
   }
-
-  this.trail.push ({x:this.px,y:this.py});
 
 
   this.debugDiv.innerHTML =

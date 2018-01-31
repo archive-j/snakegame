@@ -4,23 +4,28 @@ function GameUI() {
     this.controlFeedback = document.getElementById ('control-feedback');
     this.scoreDiv = document.getElementById ('score');
     this.debugDiv = document.getElementById("debug");
-
+    this.endGameDiv = document.getElementById("endgamemenu");
+  //  setVisibility(this.endGameDiv, false);
     this.canvas = document.querySelector ('canvas');
     this.cxt = this.canvas.getContext ("2d");
 
+    setVisibility(this.endGameDiv, false);
     this.newGameBtn = document.getElementById ('newGame-btn');
     this.highScoreBtn = document.getElementById ('highScore-btn');
     this.continueBtn = document.getElementById ('continue-btn');
-    this.startgameBtn = document.getElementById ('startgame-btn');
+    this.startgameBtn = [ document.getElementById ('startgame-btn'), document.getElementById ('endCreateNewGame-btn')
+  ];
     this.backBtn = document.getElementById ('back-btn');
 
     this.interFace = [this.debugDiv, this.scoreDiv];
 
-    //getting input fields
-    newGameInputs = document.getElementsByTagName("input");
-    for (var i = 0; i < newGameInputs.length; i++) {
-      this[newGameInputs[i].id] = newGameInputs[i];
-    }
+     //flags = {
+      //set endGameFlag(endFlag{this.game = undefined;}};
+     //getting input fields
+     newGameInputs = document.getElementsByTagName("input");
+     for (var i = 0; i < newGameInputs.length; i++) {
+       this[newGameInputs[i].id] = newGameInputs[i];
+     }
 
     // Update the current slider value (each time you drag the slider handle)
     //PIXEL SIZE
@@ -72,6 +77,8 @@ function GameUI() {
         }
     };
 
+    this.finalScore = document.getElementById("final-score");
+
     this.gameStarted = false;
     //ADD EVENT LISTENERS FOR BUTTONS
 
@@ -90,25 +97,37 @@ function GameUI() {
     }.bind(this));
 
     //Click on start button
-    this.startgameBtn.addEventListener ("click", function() {
-      if (this.validateInputs(newGameInputs)) {
-        this.saveGameData();
-        this.game = new Game(this.gameStartData, this.canvas, 2, [87, 65, 83, 68], this.interFace); //WASD
-        //console.log("this.game",this.game);
-        this.game.generateFood();
-        this.gameStarted = this.game.isRunning;
-
-        document.addEventListener('keydown', function(e) {
-          this.game.keyDownFunc(e);
-        }.bind(this));
-        document.addEventListener('keyup', function(e) {
-          this.game.keyUpFunc(e);
-        }.bind(this));
-        this.stateMachine("showBoard");
-      }
-    }.bind(this));
-
+    for (var i = 0; i < this.startgameBtn.length; i++) {
+      this.startgameBtn[i].addEventListener ("click", this.newGameInit.bind(this));
+    }
     document.addEventListener ('keypress', this.interfaceKeyDown.bind(this));
+};
+
+
+GameUI.prototype.newGameInit = function() { 
+  if (this.validateInputs(newGameInputs)) {
+    this.saveGameData();
+
+    this.game = new Game({
+      gameStartData: this.gameStartData,
+      canvas: this.canvas,
+      snakeLength: 2,
+      controlKeys: [87, 65, 83, 68],
+      interFace: this.interFace,
+      onGameEndAction: () => { this.onGameEnd(); }
+    }); //WASD
+
+    //console.log("this.game",this.game);
+    this.game.generateFood();
+
+    document.addEventListener('keydown', function(e) {
+      if(typeof(this.game) !== "undefined") this.game.keyDownFunc(e);
+    }.bind(this));
+    document.addEventListener('keyup', function(e) {
+      if(typeof(this.game) !== "undefined") this.game.keyUpFunc(e);
+    }.bind(this));
+    this.stateMachine("showBoard");
+  }
 };
 
 GameUI.prototype.validateInputs = function(inputsToCheck) {
@@ -125,24 +144,24 @@ GameUI.prototype.stateMachine = function(nextState) {
     case "mainMenuScreen":
       if(typeof(this.game) !== "undefined") this.game.pauseGame();
       setVisibility(this.menuMain, true);
-      setVisibility(this.canvas, this.newGameMenu, this.controlFeedback, false);
-      if (this.gameStarted) {
+      setVisibility(this.canvas, this.newGameMenu, this.controlFeedback, this.endGameDiv, false);
+      if (typeof(this.game) !== "undefined") {
         setVisibility(this.scoreDiv, this.continueBtn, true);
       } else {
         setVisibility(this.continueBtn, false);
       }
       break;
     case "newGameCreatinMenu":
-      setVisibility(this.menuMain, this.canvas, false);
+      setVisibility(this.menuMain, this.canvas, this.endGameDiv, false);
       setVisibility(this.newGameMenu, true);
-      if (this.gameStarted) {
+      if (typeof(this.game) !== "undefined") {
         setVisibility(this.scoreDiv, true);
       }
       this.loadGameData();
       break;
     case "showBoard":
       if(typeof(this.game) !== "undefined") this.game.continueGame();
-      setVisibility(this.menuMain, this.newGameMenu , false);
+      setVisibility(this.menuMain, this.newGameMenu, this.endGameDiv, false);
       setVisibility(this.canvas,this.controlFeedback, true);
       break;
     case "highScore":
@@ -150,14 +169,22 @@ GameUI.prototype.stateMachine = function(nextState) {
   }
 };
 
+GameUI.prototype.onGameEnd = function(){
+  if(typeof(this.game) !== "undefined") {
+    this.game.pauseGame();
+    setVisibility(this.endGameDiv, true);
+    this.finalScore.innerHTML = "Player's score: " + this.game.score;
+  }
+};
+
 GameUI.prototype.saveGameData = function(){
   this.gameStartData = {
-    'name': this.inputPlayersName.value,
-    'mapWidth': parseInt(this.inputWidth.value),
-    'mapHeight': parseInt(this.inputHeight.value),
-    'mapUnit': parseInt(this.inputPixelSize.value),
-    'autoPixelSize': this.inputAutoPixelSize.checked,
-    'difficulty' : parseInt(this.inputDifficulty.value)
+    name: this.inputPlayersName.value,
+    mapWidth: parseInt(this.inputWidth.value),
+    mapHeight: parseInt(this.inputHeight.value),
+    mapUnit: parseInt(this.inputPixelSize.value),
+    autoPixelSize: this.inputAutoPixelSize.checked,
+    difficulty: parseInt(this.inputDifficulty.value)
   };
   localStorage.setItem('gameStartData', JSON.stringify(this.gameStartData));
   console.log("GameSetupSavedToTheLocalStorage", this.gameStartData);

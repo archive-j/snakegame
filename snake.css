@@ -345,3 +345,17 @@ input[type=checkbox] {
 	left: 84px;
 	background: #4CAF50;
 }
+
+
+#endgamemenu {
+	position: relative;
+	z-index: 9;
+	width: 30%; /* Could be more or less, depending on screen size */
+	margin: 20% auto; /* 15% from the top and centered */
+  background-color: rgba(122,100,100, 0.3);
+	border-radius : 40px;
+  border: 1px solid #444;
+	box-shadow: 0px 0px 100px black;
+	transition: all 2s ease-in-out;
+
+}
