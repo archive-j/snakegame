@@ -14,7 +14,9 @@ function Game(setupData, canvas, startLength, ctrl, interFace) {
   this.sizeX = setupData.mapWidth;
   this.sizeY = setupData.mapHeight;
   this.unit = setupData.mapUnit;
+  this.startFps = setupData.difficulty;// frame per second
   this.fps = setupData.difficulty;// frame per second
+  this.speedChangeRequest = false;
 
   this.canvas = canvas;
   this.cxt = this.canvas.getContext ("2d");
@@ -49,9 +51,16 @@ Game.prototype.continueGame = function() {
 };
 
 Game.prototype.updateGame = function() {
+  if(this.speedChangeRequest) {
+    this.pauseGame();
+  //  this.fps = this.fps + this.score*0.05;
+    this.speedChangeRequest = false;
+    this.continueGame();
+  }
   this.clearBoard();
   this.moveSnake();
   this.drawBoard();
+
 };
 
 Game.prototype.clearBoard = function() {
@@ -210,16 +219,20 @@ Game.prototype.moveSnake = function() {
   for (var i = 0; i < this.trail.length; i++) {
     this.map[this.trail[i].x][this.trail[i].y] = 1; // 1 for snake trail
 
-    if (this.px === this.trail[i].x && this.py === this.trail[i].y)  { //If snake meets itself length reduced to 1 and score reduced to 0
+    if (this.px === this.trail[i].x && this.py === this.trail[i].y)  {
+      //If snake meets itself length reduced to 1 and score reduced to 0
       this.snkLength = 1;
-      this.score =  0;}
+      this.score =  0;
+      this.fps = this.startFps;
+  }
   }
 
   // if snake eat the food
   if (this.px === this.fx && this.py === this.fy) {
-    this.generateFood(); // generate new apply pos
     this.snkLength++;// growing snake
-    this.score++; //  plus 1 point
+    this.score += Math.floor(1000 * this.fps / (this.sizeX * this.sizeY)); //  plus 1 point
+    this.generateFood(); // generate new apple pos
+    this.speedChangeRequest = true;
   }
 
   this.trail.push ({x:this.px,y:this.py});
@@ -231,6 +244,8 @@ Game.prototype.moveSnake = function() {
     "<br>Position Y: " + createDivForDebug(this.py) +
     "<br>Direction X: " + createDivForDebug(this.vx) +
     "<br>Direction Y: " + createDivForDebug(this.vy) +
+    "<br>Food X: " + createDivForDebug(this.fx) +
+    "<br>Food Y: " + createDivForDebug(this.fy) +
     "<br>FPS: " + createDivForDebug(this.fps) +
     "<br>Dir cmd: " + createDivForDebug(this.ctrlQueue) +
     "<br>Dir cmd valid: " + createDivForDebug(this.ctrlQueValid) +
@@ -244,6 +259,10 @@ Game.prototype.drawBoard = function() {
 
   for (var x=0;x < this.sizeX;x++) {
     for (var y=0;y < this.sizeY;y++)  {
+      if (this.map[x][y] === 9)  { // 9 draw food
+        this.drawPixel(x, y, "rgba(170,0,0,1)", this.unit);
+      }
+
       if (this.map[x][y] === 1) { // snake trail
         this.drawPixel(x,y,"rgba(10,150,10,0.7)", this.unit, this.unit * 0.01);
       }
@@ -252,7 +271,7 @@ Game.prototype.drawBoard = function() {
         }
       //chess board pattern for empty fields
       if (this.map[x][y] === 0) {
-        if ( (x + y) % 2 == 0) {
+        if ( (x + y) % 2 === 0) {
           this.drawPixel(x,y,"rgba(10,30,10,0.5)", this.unit);
         }
         if ((x + y) % 2 === 1) { //chess table pattern
@@ -260,9 +279,7 @@ Game.prototype.drawBoard = function() {
         }
       }
 
-      if (this.map[x][y] === 9)  { // 9 draw food
-        this.drawPixel(x, y, "rgba(170,0,0,1)", this.unit);
-      }
+
     }
   }
 };
@@ -278,12 +295,14 @@ Game.prototype.generateFood = function() {
       break;
     }
   }
-
   if (foodOnSnake) {
+    console.log("ujrageneralas");
     this.generateFood();
   }
 
   this.map[this.fx][this.fy] = 9; // put food on the map
+  console.log("Most leraktam a kaját fx:", this.fx, "fy", this.fy, this.map);
+  console.log("9-es");
 };
 
 Game.prototype.drawCircle = function(posX, posY, color, size, offset) {

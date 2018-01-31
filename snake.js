@@ -46,7 +46,7 @@ function GameUI() {
 
     // Pixel Size change
     inputPixelSize.oninput  = function() {
-    //  console.log(inputAutoSize.checked);
+    //  console.log(inputAutoPixelSize.checked);
         outputP.innerHTML = inputPixelSize.value;
     };
 
@@ -54,8 +54,8 @@ function GameUI() {
     outputW.innerHTML = inputHeight.value; // Display the default slider value
     inputWidth.oninput = function() {
         outputW.innerHTML = inputWidth.value;
-    //    console.log(inputAutoSize.checked);
-        if (inputAutoSize.checked){
+    //    console.log(inputAutoPixelSize.checked);
+        if (inputAutoPixelSize.checked){
             inputPixelSize.value = 600/Math.pow(inputWidth.value * inputHeight.value, 0.5);
             outputP.innerHTML = inputPixelSize.value;
         }
@@ -65,7 +65,7 @@ function GameUI() {
     outputH.innerHTML = inputWidth.value; // Display the default slider value
     inputHeight.oninput = function() {
         outputH.innerHTML = inputHeight.value;
-        if (inputAutoSize.checked){
+        if (inputAutoPixelSize.checked){
     //      console.log(600/Math.pow(outputW.innerHTML*outputH.innerHTML,0.5));
         inputPixelSize.value = 600/Math.pow(inputWidth.value * inputHeight.value, 0.5);
           outputP.innerHTML = inputPixelSize.value;
@@ -157,7 +157,7 @@ GameUI.prototype.saveGameData = function(){
     'mapHeight': parseInt(this.inputHeight.value),
     'mapUnit': parseInt(this.inputPixelSize.value),
     'autoPixelSize': this.inputAutoPixelSize.checked,
-    'difficulty' : this.inputDifficulty.value
+    'difficulty' : parseInt(this.inputDifficulty.value)
   };
   localStorage.setItem('gameStartData', JSON.stringify(this.gameStartData));
   console.log("GameSetupSavedToTheLocalStorage", this.gameStartData);
