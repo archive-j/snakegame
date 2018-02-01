@@ -47,10 +47,7 @@ a.animated-button:link, a.animated-button:visited {
 	letter-spacing: .08em;
 	border-radius: 0;
 	text-shadow: 0 0 1px rgba(0, 0, 0, 0.2), 0 1px 0 rgba(0, 0, 0, 0.2);
-	-webkit-transition: all 1s ease;
-	-moz-transition: all 1s ease;
-	-o-transition: all 1s ease;
-	transition: all 1s ease;
+	transition: all 0.4s ease;
 }
 
 a.animated-button:link:after, a.animated-button:visited:after {
@@ -61,10 +58,7 @@ a.animated-button:link:after, a.animated-button:visited:after {
 	top: 50%;
 	width: 150%;
 	z-index: -1;
-	-webkit-transition: all 0.75s ease 0s;
-	-moz-transition: all 0.75s ease 0s;
-	-o-transition: all 0.75s ease 0s;
-	transition: all 0.75s ease 0s;
+	transition: all 0.45s ease 0s;
 }
 a.animated-button:link:hover, a.animated-button:visited:hover {
 	color: #000;
@@ -88,10 +82,7 @@ a.animated-button:link, a.animated-button:visited {
 	overflow: hidden;
 	letter-spacing: .08em;
 	text-shadow: 0 0 1px rgba(0, 0, 0, 0.2), 0 1px 0 rgba(0, 0, 0, 0.2);
-	-webkit-transition: all 1s ease;
-	-moz-transition: all 1s ease;
-	-o-transition: all 1s ease;
-	transition: all 1s ease;
+	transition: all 0.4s ease;
 }
 
 /* Victoria Buttons */
@@ -101,9 +92,6 @@ a.animated-button.victoria-one {
 }
 a.animated-button.victoria-one:after {
 	background: #bfd583;
-	-moz-transform: translateX(-50%) translateY(-50%) rotate(-25deg);
-	-ms-transform: translateX(-50%) translateY(-50%) rotate(-25deg);
-	-webkit-transform: translateX(-50%) translateY(-50%) rotate(-25deg);
 	transform: translateX(-50%) translateY(-50%) rotate(-25deg);
 }
 a.animated-button.victoria-two {
@@ -111,9 +99,6 @@ a.animated-button.victoria-two {
 }
 a.animated-button.victoria-two:after {
 	background: #bfd583;
-	-moz-transform: translateX(-50%) translateY(-50%) rotate(25deg);
-	-ms-transform: translateX(-50%) translateY(-50%) rotate(25deg);
-	-webkit-transform: translateX(-50%) translateY(-50%) rotate(25deg);
 	transform: translateX(-50%) translateY(-50%) rotate(25deg);
 }
 a.animated-button.victoria-three {
@@ -122,9 +107,6 @@ a.animated-button.victoria-three {
 a.animated-button.victoria-three:after {
 	background: #bfd583;
 	opacity: .5;
-	-moz-transform: translateX(-50%) translateY(-50%);
-	-ms-transform: translateX(-50%) translateY(-50%);
-	-webkit-transform: translateX(-50%) translateY(-50%);
 	transform: translateX(-50%) translateY(-50%);
 }
 a.animated-button.victoria-three:hover:after {
@@ -137,16 +119,12 @@ a.animated-button.victoria-four {
 a.animated-button.victoria-four:after {
 	color: #bfd583;
 	opacity: .5;
-	-moz-transform: translateY(-50%) translateX(-50%) rotate(90deg);
-	-ms-transform: translateY(-50%) translateX(-50%) rotate(90deg);
-	-webkit-transform: translateY(-50%) translateX(-50%) rotate(90deg);
 	transform: translateY(-50%) translateX(-50%) rotate(90deg);
 }
 a.animated-button.victoria-four:hover:after {
 	opacity: 1;
 	height: 600% !important;
 }
-
 
 
  .menu {
@@ -180,7 +158,7 @@ canvas {
 
 #score{
 	padding: 10px;
-	font-size: 1em;
+	font-size: 2em;
 	font-family: "Operator Mono SSm A", "Operator Mono SSm B", 'Source Code Pro', Menlo, Consolas, Monaco, monospace;
 	color: #bfd583;
 }

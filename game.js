@@ -4,12 +4,12 @@ function Game({ gameStartData, canvas, snakeLength, controlKeys, interFace, onGa
   this.gameOver = false;
   this.ctrlFdbElement = document.getElementsByClassName('ctrl');
   //Save to the local storage
-  this.endGameRequest = false;
   this.debugDiv = interFace[0];
   this.scoreDiv = interFace[1];
   this.ctrl = controlKeys;
   this.snkLength = snakeLength;
   this.onGameEndAction = onGameEndAction;
+
   this.playerName = gameStartData.name;
   this.sizeX = gameStartData.mapWidth;
   this.sizeY = gameStartData.mapHeight;
@@ -49,7 +49,6 @@ Game.prototype.endGame = function() {
   if (this.SessionId) {
     clearInterval(this.SessionId);
   } // pause game
-  console.log(this.endGameRequest);
 };
 
 Game.prototype.continueGame = function() {
@@ -227,6 +226,10 @@ Game.prototype.moveSnake = function() {
 
     if (this.px === this.trail[i].x && this.py === this.trail[i].y)  {
       //If snake meets itself length reduced to 1 and score reduced to 0
+      this.result = {
+        name : this.playerName,
+        score : this.score
+      };
       this.onGameEndAction();
     }
   }
