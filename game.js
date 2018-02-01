@@ -1,6 +1,7 @@
 //SYMBOL
 
 function Game({ gameStartData, canvas, snakeLength, controlKeys, interFace, onGameEndAction }) {
+  this.gameOver = false;
   this.ctrlFdbElement = document.getElementsByClassName('ctrl');
   //Save to the local storage
   this.endGameRequest = false;
@@ -226,10 +227,10 @@ Game.prototype.moveSnake = function() {
 
     if (this.px === this.trail[i].x && this.py === this.trail[i].y)  {
       //If snake meets itself length reduced to 1 and score reduced to 0
-      this.onGameEndAction(this.score);
+      this.onGameEndAction();
     }
   }
-  console.log("csicska1");
+
   this.trail.push ({x:this.px,y:this.py});
 
   // if snake eat the food
@@ -282,7 +283,6 @@ Game.prototype.drawBoard = function() {
         }
       }
 
-
     }
   }
 };
@@ -299,13 +299,10 @@ Game.prototype.generateFood = function() {
     }
   }
   if (foodOnSnake) {
-    console.log("ujrageneralas");
     this.generateFood();
   }
 
   this.map[this.fx][this.fy] = 9; // put food on the map
-  console.log("Most leraktam a kaját fx:", this.fx, "fy", this.fy, this.map);
-  console.log("9-es");
 };
 
 Game.prototype.drawCircle = function(posX, posY, color, size, offset) {

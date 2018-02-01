@@ -1,4 +1,5 @@
 function GameUI() {
+    this.gameStarted = false;
     this.newGameMenu = document.getElementById ('newGameMenu');
     this.menuMain = document.getElementById ('menu');
     this.controlFeedback = document.getElementById ('control-feedback');
@@ -10,13 +11,23 @@ function GameUI() {
     this.cxt = this.canvas.getContext ("2d");
 
     setVisibility(this.endGameDiv, false);
-    this.newGameBtn = document.getElementById ('newGame-btn');
     this.highScoreBtn = document.getElementById ('highScore-btn');
     this.continueBtn = document.getElementById ('continue-btn');
-    this.startgameBtn = [ document.getElementById ('startgame-btn'), document.getElementById ('endCreateNewGame-btn')
-  ];
-    this.backBtn = document.getElementById ('back-btn');
 
+    this.newGameBtns = [
+      document.getElementById('newGame-btn'),
+      document.getElementById('endCreateNewGame-btn')
+    ];
+
+    this.startGameBtns = [
+      document.getElementById('startgame-btn'),
+      document.getElementById('endRestart-btn')
+    ];
+
+    this.mainMenuBtns = [
+      document.getElementById('back-btn'),
+      document.getElementById('endMainMenu-btn')
+    ];
     this.interFace = [this.debugDiv, this.scoreDiv];
 
      //flags = {
@@ -30,7 +41,6 @@ function GameUI() {
     // Update the current slider value (each time you drag the slider handle)
     //PIXEL SIZE
     var outputP = document.getElementById("valueU");
-    outputP.innerHTML = this.inputPixelSize.value; // Display the default slider value
 
     //Auto size switch changing detection
     inputAutoPixelSize.onchange  = function() {
@@ -44,7 +54,6 @@ function GameUI() {
 
     // DIFFICULTY
     var outputD = document.getElementById("valueD");
-    outputD.innerHTML = inputDifficulty.value; // Display the default slider value
     inputDifficulty.oninput  = function() {
         outputD.innerHTML = inputDifficulty.value;
     } ;
@@ -56,7 +65,6 @@ function GameUI() {
     };
 
     var outputW = document.getElementById("valueW");
-    outputW.innerHTML = inputHeight.value; // Display the default slider value
     inputWidth.oninput = function() {
         outputW.innerHTML = inputWidth.value;
     //    console.log(inputAutoPixelSize.checked);
@@ -67,7 +75,6 @@ function GameUI() {
     };
 
     var outputH = document.getElementById("valueH");
-    outputH.innerHTML = inputWidth.value; // Display the default slider value
     inputHeight.oninput = function() {
         outputH.innerHTML = inputHeight.value;
         if (inputAutoPixelSize.checked){
@@ -79,32 +86,36 @@ function GameUI() {
 
     this.finalScore = document.getElementById("final-score");
 
-    this.gameStarted = false;
     //ADD EVENT LISTENERS FOR BUTTONS
-
     this.stateMachine("mainMenuScreen");
-    //var self = this;
-    this.newGameBtn.addEventListener ("click", function() {
-      this.stateMachine("newGameCreatinMenu");
-    }.bind(this));
 
     this.continueBtn.addEventListener ("click", function() {
-      if (this.game.isRunning) this.stateMachine("showBoard");
+        this.stateMachine("showBoard");
     }.bind(this));
 
-    this.backBtn.addEventListener ("click", function() {
+    for (var i = 0; i < this.mainMenuBtns.length; i++) {
+      this.mainMenuBtns[i].addEventListener("click",  function() {
       this.stateMachine("mainMenuScreen");
-    }.bind(this));
+      }.bind(this));
+    }
+
+    for (var i = 0; i < this.newGameBtns.length; i++) {
+      this.newGameBtns[i].addEventListener("click",  function() {
+      this.stateMachine("newGameCreatinMenu");
+      }.bind(this));
+    }
 
     //Click on start button
-    for (var i = 0; i < this.startgameBtn.length; i++) {
-      this.startgameBtn[i].addEventListener ("click", this.newGameInit.bind(this));
+
+    for (var i = 0; i < this.startGameBtns.length; i++) {
+      this.startGameBtns[i].addEventListener ("click", this.newGameInit.bind(this));
     }
+
     document.addEventListener ('keypress', this.interfaceKeyDown.bind(this));
 };
 
 
-GameUI.prototype.newGameInit = function() { 
+GameUI.prototype.newGameInit = function() {
   if (this.validateInputs(newGameInputs)) {
     this.saveGameData();
 
@@ -114,7 +125,7 @@ GameUI.prototype.newGameInit = function() {
       snakeLength: 2,
       controlKeys: [87, 65, 83, 68],
       interFace: this.interFace,
-      onGameEndAction: () => { this.onGameEnd(); }
+      onGameEndAction: () => { this.stateMachine("gameOver"); }
     }); //WASD
 
     //console.log("this.game",this.game);
@@ -145,7 +156,8 @@ GameUI.prototype.stateMachine = function(nextState) {
       if(typeof(this.game) !== "undefined") this.game.pauseGame();
       setVisibility(this.menuMain, true);
       setVisibility(this.canvas, this.newGameMenu, this.controlFeedback, this.endGameDiv, false);
-      if (typeof(this.game) !== "undefined") {
+
+      if (typeof(this.game) !== "undefined" && !this.gameOver) {
         setVisibility(this.scoreDiv, this.continueBtn, true);
       } else {
         setVisibility(this.continueBtn, false);
@@ -154,6 +166,7 @@ GameUI.prototype.stateMachine = function(nextState) {
     case "newGameCreatinMenu":
       setVisibility(this.menuMain, this.canvas, this.endGameDiv, false);
       setVisibility(this.newGameMenu, true);
+
       if (typeof(this.game) !== "undefined") {
         setVisibility(this.scoreDiv, true);
       }
@@ -164,18 +177,17 @@ GameUI.prototype.stateMachine = function(nextState) {
       setVisibility(this.menuMain, this.newGameMenu, this.endGameDiv, false);
       setVisibility(this.canvas,this.controlFeedback, true);
       break;
+    case "gameOver":
+        this.game.pauseGame();
+        this.gameOver = true;
+        setVisibility(this.endGameDiv, true);
+        this.finalScore.innerHTML = "Player's score: " + this.game.score;
+      break;
     case "highScore":
       break;
   }
 };
 
-GameUI.prototype.onGameEnd = function(){
-  if(typeof(this.game) !== "undefined") {
-    this.game.pauseGame();
-    setVisibility(this.endGameDiv, true);
-    this.finalScore.innerHTML = "Player's score: " + this.game.score;
-  }
-};
 
 GameUI.prototype.saveGameData = function(){
   this.gameStartData = {
@@ -196,6 +208,10 @@ GameUI.prototype.loadGameData = function(){
     console.log("localStorage.getItem('gameStartData')", localStorage.getItem('gameStartData'));
     this.gameStartData = JSON.parse(this.gameStartData);
 
+    outputH.innerHTML = inputWidth.value; // Display the default slider value
+    outputW.innerHTML = inputHeight.value; // Display the default slider value
+    outputD.innerHTML = inputDifficulty.value; // Display the default slider value
+    outputP.innerHTML = this.inputPixelSize.value; // Display the default slider value
     this.inputPlayersName.value = this.gameStartData.name;
     this.inputWidth.value = this.gameStartData.mapWidth;
     this.inputHeight.value = this.gameStartData.mapHeight;
@@ -210,14 +226,16 @@ GameUI.prototype.interfaceKeyDown = function(evt) {
     case 32: //pause on space
       switch  (this.currentState) {
         case "mainMenuScreen":
-        if(typeof(this.game) !== "undefined"){
-          this.stateMachine ("showBoard");
+          if(typeof(this.game) !== undefined && !this.gameOver){
+              this.stateMachine ("showBoard");
+          }
           break;
-        }
         case "showBoard":
-          this.stateMachine ("mainMenuScreen");
+           if(typeof(this.game) !== undefined ){
+            this.stateMachine ("mainMenuScreen");
+          }
           break;
-        }
+      }
     break;
   }
 };

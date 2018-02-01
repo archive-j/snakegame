@@ -38,7 +38,7 @@ a.animated-button:link, a.animated-button:visited {
 	margin: 30px auto 0;
 	padding: 14px 15px;
 	color: #fff;
-	font-size:14px;
+	font-size:2em;
 	font-weight: bold;
 	text-align: center;
 	text-decoration: none;
@@ -79,7 +79,7 @@ a.animated-button:link, a.animated-button:visited {
 	margin: 30px auto 0;
 	padding: 14px 15px;
 	color: #fff;
-	font-size:14px;
+	font-size: 1em;
 	border-radius: 0;
 	font-weight: bold;
 	text-align: center;
@@ -180,7 +180,7 @@ canvas {
 
 #score{
 	padding: 10px;
-	font-size: 2em;
+	font-size: 1em;
 	font-family: "Operator Mono SSm A", "Operator Mono SSm B", 'Source Code Pro', Menlo, Consolas, Monaco, monospace;
 	color: #bfd583;
 }
@@ -346,13 +346,16 @@ input[type=checkbox] {
 	background: #4CAF50;
 }
 
-
 #endgamemenu {
-	position: relative;
+	margin: auto;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	position: absolute;
 	z-index: 9;
 	width: 30%; /* Could be more or less, depending on screen size */
 	margin: 20% auto; /* 15% from the top and centered */
-  background-color: rgba(122,100,100, 0.3);
+  background-color: rgba(10,10,10, 1);
 	border-radius : 40px;
   border: 1px solid #444;
 	box-shadow: 0px 0px 100px black;

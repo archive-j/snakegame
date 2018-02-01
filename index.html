@@ -31,6 +31,7 @@
       <a class="btn btn-sm animated-button victoria-two" id="continue-btn" href="#">Continue</a>
     </div>
 
+    <div class="text-center" id="score"></div>
     <div id="newGameMenu" class="menu column col-sm- center">
       <div class="row h2 text-center text-uppercase">Creating new game</div>
       <form>
@@ -91,13 +92,12 @@
     </div>
     <div id="endgamemenu" class="menu column col-sm- center">
       <div class="text-center" id="final-score"></div>
-      <a class="pull-left btn btn-sm   animated-button victoria-two" id="back-btn" href="#">Main Menu</a>
-      <a class="btn btn-sm   animated-button victoria-two" id="endCreateNewGame-btn" href="#">Restart</a>
-      <a class="btn btn-sm   animated-button victoria-two" id="newGame-btn" href="#">New Game with different settings</a>
+      <a id="endMainMenu-btn" class="pull-left btn btn-sm animated-button victoria-two"  href="#">Main Menu</a>
+      <a id="endRestart-btn" class="btn btn-sm animated-button victoria-two"  href="#">Restart</a>
+      <a class="btn btn-sm animated-button victoria-two" id="endCreateNewGame-btn" href="#">New Game with different settings</a>
     </div>
 
     <canvas id="canvas" width="300" height="300"></canvas>
-    <div class="text-center" id="score"></div>
 
     <script type="text/javascript" src="help.js"></script>
     <script type="text/javascript" src="game.js"></script>
