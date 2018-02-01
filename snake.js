@@ -8,12 +8,7 @@ function GameUI() {
     this.endGameDiv = document.getElementById("endgamemenu");
     this.canvas = document.querySelector ('canvas');
     this.cxt = this.canvas.getContext ("2d");
-    this.highscore = [
-      { name: "qwdwq", score: 123123 },
-      { name: "123", score : 12312312},
-      { name: "12122", score: 12313},
-      { name: "123123", score: 123123}
-  ];
+    this.highscore = [];
     this.highscoreDiv = document.getElementById('highscore');
     this.highscoreTable = document.getElementById('highscore-table');
 
@@ -32,8 +27,10 @@ function GameUI() {
 
     this.mainMenuBtns = [
       document.getElementById('back-btn'),
-      document.getElementById('endMainMenu-btn')
+      document.getElementById('endMainMenu-btn'),
+      document.getElementById('highscoreback-btn'),
     ];
+
     this.interFace = [this.debugDiv, this.scoreDiv];
 
     newGameInputs = document.getElementsByTagName("input");
@@ -175,7 +172,7 @@ GameUI.prototype.stateMachine = function(nextState) {
     case "mainMenuScreen":
       if(typeof(this.game) !== "undefined") this.game.pauseGame();
       setVisibility(this.menuMain, true);
-      setVisibility(this.canvas, this.newGameMenu, this.controlFeedback, this.endGameDiv, this.debugDiv, false);
+      setVisibility(this.canvas, this.newGameMenu, this.controlFeedback, this.endGameDiv, this.debugDiv, this.highscoreDiv, false);
 
       if (typeof(this.game) !== "undefined" && !this.gameOver) {
         setVisibility(this.scoreDiv, this.continueBtn, true);
@@ -195,7 +192,7 @@ GameUI.prototype.stateMachine = function(nextState) {
     case "showBoard":
       if(typeof(this.game) !== "undefined") this.game.continueGame();
       setVisibility(this.menuMain, this.newGameMenu, this.endGameDiv, false);
-      setVisibility(this.canvas,this.controlFeedback, true);
+      setVisibility(this.canvas,this.controlFeedback, this.debugDiv, true);
       break;
     case "gameOver":
       this.game.pauseGame();
@@ -226,9 +223,10 @@ GameUI.prototype.buildHighScore = function(){
   //body reference
   // create elements <table> and a <tbody>
   var myTable = this.highscoreTable;
-
+  var myTableBody = myTable.tBodies[0];
+  myTableBody.innerHTML = "";
   for (var i = 0; i < this.highscore.length; i++) {
-    var row = myTable.insertRow([i]);
+    var row = myTableBody.insertRow([i]);
     var nth = row.insertCell(0);
     var name = row.insertCell(1);
     var score = row.insertCell(2);
