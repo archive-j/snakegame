@@ -142,6 +142,12 @@ GameUI.prototype.newGameInit = function() {
         this.stateMachine("gameOver");
         this.highscore.push(this.game.result);
         this.highscore.sort(this.compare);
+        localStorage.setItem('highscoreTable', JSON.stringify(this.highscore));
+        if (localStorage.getItem("highscoreTable") !== undefined){
+            this.loadedHighscore = localStorage.getItem('highscoreTable');
+            console.log("localStorage.getItem('loadedHighscore')", localStorage.getItem('highscoreTable'));
+            this.loadedHighscore = JSON.parse(this.loadedHighscore);
+          }
       }
     }); //WASD
 
