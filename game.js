@@ -33,6 +33,7 @@ function Game({ gameStartData, canvas, snakeLength, controlKeys, interFace, onGa
   this.score =  0;
   // map 0 empty 1 snake trail 2 snake head 9 food
   this.map = new Array(this.sizeX).fill().map(()=>new Array(this.sizeY).fill(0)); // empty map
+  this.mapX = this.sizeX + "x" + this.sizeY;
 
   this.ctrlQueue = [];
   this.ctrlQueValid = [];
@@ -226,9 +227,11 @@ Game.prototype.moveSnake = function() {
 
     if (this.px === this.trail[i].x && this.py === this.trail[i].y)  {
       //If snake meets itself length reduced to 1 and score reduced to 0
-      this.result = {
+        this.result = {
         name : this.playerName,
-        score : this.score
+        score : this.score,
+        size: this.sizeX + "x" + this.sizeY
+
       };
       this.onGameEndAction();
     }

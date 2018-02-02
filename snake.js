@@ -139,15 +139,10 @@ GameUI.prototype.newGameInit = function() {
       controlKeys: [87, 65, 83, 68],
       interFace: this.interFace,
       onGameEndAction: () => {
-        this.stateMachine("gameOver");
         this.highscore.push(this.game.result);
         this.highscore.sort(this.compare);
         localStorage.setItem('highscoreTable', JSON.stringify(this.highscore));
-        if (localStorage.getItem("highscoreTable") !== undefined){
-            this.loadedHighscore = localStorage.getItem('highscoreTable');
-            console.log("localStorage.getItem('loadedHighscore')", localStorage.getItem('highscoreTable'));
-            this.loadedHighscore = JSON.parse(this.loadedHighscore);
-          }
+        this.stateMachine("gameOver");
       }
     }); //WASD
 
@@ -210,8 +205,9 @@ GameUI.prototype.stateMachine = function(nextState) {
       setVisibility(this.menuMain, this.canvas, this.endGameDiv, this.controlFeedback, this.debugDiv, false);
       setVisibility(this.highscoreDiv, true);
     //  this.highscore.push(this.game.result);
-      this.highscore.sort(this.compare);
-      this.buildHighScore();
+      this.highscore = this.getFromLocalStorage("highscoreTable");
+      if (this.highscore != null) this.buildHighScore();
+
       break;
   }
   console.log(this.currentState);
@@ -230,22 +226,37 @@ GameUI.prototype.buildHighScore = function(){
   // create elements <table> and a <tbody>
   var myTable = this.highscoreTable;
   var myTableBody = myTable.tBodies[0];
-  myTableBody.innerHTML = "";
+  var newTableBody = document.createElement('tbody');
+  var highscoreProperyNames = Object.getOwnPropertyNames(this.highscore[0]);
+  console.log(highscoreProperyNames);
   for (var i = 0; i < this.highscore.length; i++) {
-    var row = myTableBody.insertRow([i]);
-    var nth = row.insertCell(0);
-    var name = row.insertCell(1);
-    var score = row.insertCell(2);
-    nth.innerHTML = [i+1];
-    name.innerHTML = this.highscore[i].name;
-    score.innerHTML = this.highscore[i].score;
-  }
+    var row = newTableBody.insertRow([i]);
+    var myObj;
+    var cell = row.insertCell(0);
+    cell.innerHTML = [i+1];
+    for (var j = 0; j < highscoreProperyNames.length; j++) {
+      var cell = row.insertCell(j+1);
+      cell.innerHTML = this.highscore[i][highscoreProperyNames[j]];
+      }
 
+    }
+    myTable.replaceChild(newTableBody, myTableBody);
+};
+
+
+  GameUI.prototype.getFromLocalStorage = function(item){
+    var loadedData;
+    if (localStorage.getItem(item) !== undefined){
+      loadedData = localStorage.getItem(item);
+      console.log("localStorage.getItem('loadedHighscore')", loadedData);
+      return JSON.parse(loadedData);
+    }
+    return this.highscore;
+  };
   // var myTable = this.highscoreTable;
   // var header = myTable.createTHead();
   // header.insertRow(0).appendChild(document.createElement("th"));
 
-};
 
 GameUI.prototype.saveGameData = function(){
   this.gameStartData = {
