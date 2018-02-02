@@ -8,8 +8,10 @@ function GameUI() {
     this.endGameDiv = document.getElementById("endgamemenu");
     this.canvas = document.querySelector ('canvas');
     this.cxt = this.canvas.getContext ("2d");
-    this.highscore = [];
-    this.highscoreDiv = document.getElementById('highscore');
+    let highscore = [];
+    this.highscoreDiv = document.getElementById('highscore-cont');
+    this.sizeListDiv = document.getElementById('size-list');
+    this.sizePickerDiv = document.getElementById('size-picker');
     this.highscoreTable = document.getElementById('highscore-table');
 
     this.highScoreBtn = document.getElementById ('highScore-btn');
@@ -94,6 +96,10 @@ function GameUI() {
         this.stateMachine("showBoard");
     }.bind(this));
 
+    this.sizePickerDiv.addEventListener ("change", function() {
+      this.updateTable();
+    }.bind(this));
+
     this.highScoreBtn.addEventListener ("click", function() {
         this.stateMachine("highScore");
     }.bind(this));
@@ -129,6 +135,7 @@ GameUI.prototype.compare = function(a,b) {
 };
 
 GameUI.prototype.newGameInit = function() {
+  let highscore = this.highscore;
   if (this.validateInputs(newGameInputs)) {
     this.saveGameData();
     this.gameOver = false;
@@ -139,10 +146,12 @@ GameUI.prototype.newGameInit = function() {
       controlKeys: [87, 65, 83, 68],
       interFace: this.interFace,
       onGameEndAction: () => {
-        this.highscore = this.getFromLocalStorage("highscoreTable");
-        this.highscore.push(this.game.result);
-        this.highscore.sort(this.compare);
-        localStorage.setItem('highscoreTable', JSON.stringify(this.highscore));
+        highscore = this.getFromLocalStorage("highscoreTable");
+        console.log("beforepush", highscore);
+        highscore.push(this.game.result);
+        highscore.sort(this.compare);
+        console.log("highscore", highscore);
+        localStorage.setItem('highscoreTable', JSON.stringify(highscore));
         this.stateMachine("gameOver");
       }
     }); //WASD
@@ -207,8 +216,10 @@ GameUI.prototype.stateMachine = function(nextState) {
       setVisibility(this.highscoreDiv, true);
     //  this.highscore.push(this.game.result);
       this.highscore = this.getFromLocalStorage("highscoreTable");
-      if (this.highscore != null) this.buildHighScore();
-
+      if (typeof(this.highscore) !== "undefined") {
+        this.buildHighScore();
+        this.updateTable();
+      }
       break;
   }
   console.log(this.currentState);
@@ -222,41 +233,69 @@ GameUI.prototype.stateMachine = function(nextState) {
   </tr>
 */
 
-GameUI.prototype.buildHighScore = function(){
+GameUI.prototype.buildHighScore = function() {
+  let highscore = this.highscore;
   //body reference
   // create elements <table> and a <tbody>
-  var myTable = this.highscoreTable;
+  //GET list of map size of records
+  this.resultListCategories = [];
+
+  while (this.sizePickerDiv.firstChild) {
+    this.sizePickerDiv.removeChild(this.sizePickerDiv.firstChild);
+  }
+
+  for (let i = 0; i < highscore.length; i++) {
+    const recordHighscore = highscore[i].mapSize;
+    console.log("highscore[i].mapSize", highscore[i].mapSize);
+    if (!this.resultListCategories.includes(recordHighscore)) {
+      this.resultListCategories.push(recordHighscore);
+      let opt = document.createElement('option');
+      opt.value = recordHighscore;
+      opt.innerText = recordHighscore;
+      this.sizePickerDiv.appendChild(opt);
+      console.log("sizePickerDiv", opt.value);
+    }
+  }
+};
+
+GameUI.prototype.updateTable = function() {
+  let highscore = this.highscore;
+  let currentMapSize = this.sizePickerDiv.value;
+  let filtered = highscore.filter(result => result.mapSize === currentMapSize);
+  //this.sizeListDiv.innerHTML = resultListCategories.join(' ');
+  const myTable = this.highscoreTable;
   var myTableBody = myTable.tBodies[0];
   var newTableBody = document.createElement('tbody');
-  var highscoreProperyNames = Object.getOwnPropertyNames(this.highscore[0]);
+  var highscoreProperyNames = Object.getOwnPropertyNames(filtered[0]);
   console.log(highscoreProperyNames);
-  for (var i = 0; i < this.highscore.length; i++) {
+  for (var i = 0; i < filtered.length; i++) {
     var row = newTableBody.insertRow([i]);
     var myObj;
     var cell = row.insertCell(0);
     cell.innerHTML = [i+1];
     for (var j = 0; j < highscoreProperyNames.length; j++) {
       var cell = row.insertCell(j+1);
-      cell.innerHTML = this.highscore[i][highscoreProperyNames[j]];
+      cell.innerHTML = filtered[i][highscoreProperyNames[j]];
       }
-
     }
     myTable.replaceChild(newTableBody, myTableBody);
 };
 
 
-  GameUI.prototype.getFromLocalStorage = function(item){
-    var loadedData;
-    if (localStorage.getItem(item) !== undefined){
-      loadedData = localStorage.getItem(item);
-      console.log("localStorage.getItem('loadedHighscore')", loadedData);
-      return JSON.parse(loadedData);
-    }
-    return this.highscore;
-  };
-  // var myTable = this.highscoreTable;
-  // var header = myTable.createTHead();
-  // header.insertRow(0).appendChild(document.createElement("th"));
+GameUI.prototype.getFromLocalStorage = function(item){
+  var loadedData = {};
+  loadedData = localStorage.getItem(item);
+  loadedData = JSON.parse(loadedData);
+  if (localStorage.hasOwnProperty(item)) {
+    console.log("typeof(loadedData)", typeof(loadedData));
+    return loadedData;
+  } else{
+    return [];
+  }
+};
+// var myTable = this.highscoreTable;
+// var header = myTable.createTHead();
+// header.insertRow(0).appendChild(document.createElement("th"));
 
 
 GameUI.prototype.saveGameData = function(){

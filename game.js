@@ -228,10 +228,9 @@ Game.prototype.moveSnake = function() {
     if (this.px === this.trail[i].x && this.py === this.trail[i].y)  {
       //If snake meets itself length reduced to 1 and score reduced to 0
         this.result = {
-        name : this.playerName,
-        score : this.score,
-        size: this.sizeX + "x" + this.sizeY
-
+          name : this.playerName,
+          score : this.score,
+          mapSize: this.sizeX + "x" + this.sizeY 
       };
       this.onGameEndAction();
     }

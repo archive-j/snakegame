@@ -95,24 +95,27 @@
       <a id="endRestart-btn" class="btn btn-sm animated-button victoria-two"  href="#">Restart</a>
       <a class="btn btn-sm animated-button victoria-two" id="endCreateNewGame-btn" href="#">New Game with different settings</a>
     </div>
-    <div id="highscore" class="menu column col-sm- center">
+    <div id="highscore-cont" class="menu column col-sm- center">
       <div class="h1 game-name text-center text-uppercase">HIGHSCORE</div>
+      <div id="size-list" class="text-center text-uppercase">
+        <select id="size-picker" class="selectpicker">
+        </select>
+      </div>
+      <table id="highscore-table" class="table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Score</th>
+            <th>Size</th>
+          </tr>
+          <tbody>
 
-        <table id="highscore-table" class="table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Score</th>
-              <th>Size</th>
-            </tr>
-            <tbody>
-
-            </tbody>
-          </thead>
-        </table>
+          </tbody>
+        </thead>
+      </table>
       <a id="highscoreback-btn" class="btn btn-sm col-sm-4 animated-button victoria-two" href="#">Back</a>
-    </div>
+      </div>
     <canvas id="canvas" width="300" height="300"></canvas>
     <script type="text/javascript" src="help.js"></script>
     <script type="text/javascript" src="game.js"></script>
