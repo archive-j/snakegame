@@ -214,7 +214,7 @@ Game.prototype.moveSnake = function() {
   }
 
   //console.log("current vector",(this.getDirVector(this.currentDir)).x);
-  while (this.snkLength<=this.trail.length) {
+  while (this.snkLength <= this.trail.length) {
   //  console.log("this.trail", this.trail);
     this.map[this.trail[0].x][this.trail[0].y] = 0; // 0 for empty
     this.trail.shift();
@@ -227,22 +227,24 @@ Game.prototype.moveSnake = function() {
 
     if (this.px === this.trail[i].x && this.py === this.trail[i].y)  {
       //If snake meets itself length reduced to 1 and score reduced to 0
-        this.result = {
-          name : this.playerName,
-          score : this.score,
-          mapSize: this.sizeX + "x" + this.sizeY 
+      this.result = {
+        name: this.playerName,
+        score: this.score,
+        mapSize: this.sizeX + "x" + this.sizeY
       };
       this.onGameEndAction();
     }
   }
 
-  this.trail.push ({x:this.px,y:this.py});
+  this.trail.push({ x: this.px, y: this.py });
 
   // if snake eat the food
   if (this.px === this.fx && this.py === this.fy) {
     this.snkLength++;// growing snake
-    this.score += Math.floor(1000 * this.fps / (this.sizeX * this.sizeY)); //  plus 1 point
+  //  this.score += Math.floor(100 * this.fps / (5*(this.sizeX * this.sizeY))); //  plus 1 point
+    this.score += Math.floor(this.fps); //  plus 1 point
     this.generateFood(); // generate new apple pos
+    this.fps *= 1.04;//  plus 1 point
     this.speedChangeRequest = true;
   }
 
