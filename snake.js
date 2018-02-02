@@ -139,6 +139,7 @@ GameUI.prototype.newGameInit = function() {
       controlKeys: [87, 65, 83, 68],
       interFace: this.interFace,
       onGameEndAction: () => {
+        this.highscore = this.getFromLocalStorage("highscoreTable");
         this.highscore.push(this.game.result);
         this.highscore.sort(this.compare);
         localStorage.setItem('highscoreTable', JSON.stringify(this.highscore));
