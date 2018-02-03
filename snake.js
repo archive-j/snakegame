@@ -1,22 +1,29 @@
 function GameUI() {
-    this.gameStarted = false;
-    this.newGameMenu = document.getElementById ('newGameMenu');
+    //MAINMENU
+    this.newGameMenu = document.getElementById ('newgame-menu');
     this.menuMain = document.getElementById ('menu');
-    this.controlFeedback = document.getElementById ('control-feedback');
-    this.scoreDiv = document.getElementById ('score');
-    this.debugDiv = document.getElementById("debug");
-    this.endGameDiv = document.getElementById("endgamemenu");
-    this.canvas = document.querySelector ('canvas');
-    this.cxt = this.canvas.getContext ("2d");
-    let highscore = [];
-    this.highscoreDiv = document.getElementById('highscore-cont');
-    this.sizeListDiv = document.getElementById('size-list');
-    this.sizePickerDiv = document.getElementById('size-picker');
-    this.highscoreTable = document.getElementById('highscore-table');
-
     this.highScoreBtn = document.getElementById ('highScore-btn');
     this.continueBtn = document.getElementById ('continue-btn');
 
+    // END GAME POP UP
+    this.endGameDiv = document.getElementById("endgamemenu");
+
+    // GAME
+    this.controlFeedback = document.getElementById ('control-feedback');;
+    this.scoreDiv = document.getElementById ('score');
+    this.debugDiv = document.getElementById("debug");
+    this.canvas = document.querySelector ('canvas');
+    this.cxt = this.canvas.getContext ("2d");
+
+
+    //HIGHSCORE
+    this.highscore = [];
+    this.highscoreDiv = document.getElementById('highscore-cont');
+    this.highscoreTable = document.getElementById('highscore-table');
+    this.sizeListDiv = document.getElementById('size-list');
+    this.sizePickerDiv = document.getElementById('size-picker');
+
+    // Get Btns
     this.newGameBtns = [
       document.getElementById('newGame-btn'),
       document.getElementById('endCreateNewGame-btn')
@@ -280,7 +287,6 @@ GameUI.prototype.updateTable = function() {
     }
     myTable.replaceChild(newTableBody, myTableBody);
 };
-
 
 GameUI.prototype.getFromLocalStorage = function(item){
   var loadedData = {};

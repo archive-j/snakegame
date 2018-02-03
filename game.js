@@ -20,8 +20,9 @@ function Game({ gameStartData, canvas, snakeLength, controlKeys, interFace, onGa
 
   this.canvas = canvas;
   this.cxt = this.canvas.getContext ("2d");
-  this.canvas.width = this.sizeX * this.unit; // a pálya méretének beállítása
-  this.canvas.height = this.sizeY * this.unit;
+  this.border = this.unit*2;
+  this.canvas.width = this.sizeX * this.unit + this.border; // a pálya méretének beállítása
+  this.canvas.height = this.sizeY * this.unit + this.border;
 
   this.px = getRandomInt(this.sizeX); //snake on the middle
   this.py = getRandomInt(this.sizeY); // this on the middle
@@ -65,7 +66,7 @@ Game.prototype.updateGame = function() {
   }
   this.clearBoard();
   this.moveSnake();
-  this.drawBoard();
+  this.drawBoard(this.border);
   this.isRunning = true;
 };
 
@@ -171,7 +172,6 @@ Game.prototype.getCurrentDirinString = function() {
 
 Game.prototype.validateDir = function() {
   // check if the snake can go this direction and set the last pusded btn to next direction
-
   this.ctrlQueValid = [];
   for (var i = 0; i < this.ctrlQueue.length; i++) {
     this.ctrlQueValid[i] = this.ctrlQueue[i];
@@ -220,7 +220,6 @@ Game.prototype.moveSnake = function() {
     this.trail.shift();
   }
 
-
   for (var i = 0; i < this.trail.length; i++) {
     this.map[this.px][this.py] = 2; // 2 for Snake head
     this.map[this.trail[i].x][this.trail[i].y] = 1; // 1 for snake trail
@@ -244,10 +243,9 @@ Game.prototype.moveSnake = function() {
   //  this.score += Math.floor(100 * this.fps / (5*(this.sizeX * this.sizeY))); //  plus 1 point
     this.score += Math.floor(this.fps); //  plus 1 point
     this.generateFood(); // generate new apple pos
-    this.fps *= 1.04;//  plus 1 point
+    this.fps *= 1.04 ;//  plus 1 point
     this.speedChangeRequest = true;
   }
-
 
   this.debugDiv.innerHTML =
     '<div class="text-center">Debug</div>' +
@@ -265,33 +263,51 @@ Game.prototype.moveSnake = function() {
     "<br> snkLength " + createDivForDebug(this.snkLength);
 };
 
-Game.prototype.drawBoard = function() {
-  this.scoreDiv.innerText = this.playerName + "'s score: " + this.score;
-
-  for (var x=0;x < this.sizeX;x++) {
-    for (var y=0;y < this.sizeY;y++)  {
+Game.prototype.drawBoard = function(offset) {
+  const color = "rgba(0,0,0,1)";
+  const cxt = this.cxt;
+  cxt.fillStyle = color;
+  cxt.fillRect (0, 0, this.canvas.width, this.canvas.height);
+  const scoreText = this.playerName + ": " + this.score;
+  const difficulty = "Level: "+ Math.floor(this.fps);
+  const fontSize = offset/4;
+  //this.scoreDiv.innerText = this.playerName + "'s score: " + this.score;
+  let baseOffset = {};
+  baseOffset.x = offset/2;
+  baseOffset.y = offset/2;
+  for (var x=0; x < this.sizeX; x++) {
+    for (var y=0; y < this.sizeY; y++)  {
       if (this.map[x][y] === 9)  { // 9 draw food
-        this.drawPixel(x, y, "rgba(170,0,0,1)", this.unit);
+        this.drawPixel(baseOffset, x, y, "rgba(170,0,0,1)", this.unit);
       }
 
       if (this.map[x][y] === 1) { // snake trail
-        this.drawPixel(x,y,"rgba(10,150,10,0.7)", this.unit, this.unit * 0.01);
+        this.drawPixel(baseOffset, x, y, "rgba(10,150,10,0.7)", this.unit, this.unit * 0.01);
       }
         if (this.map[x][y] === 2) { //snake head
-          this.drawPixel(x,y,"rgba(50,150,50,1)", this.unit);
+          this.drawPixel(baseOffset, x, y, "rgba(50,150,50,1)", this.unit);
         }
       //chess board pattern for empty fields
       if (this.map[x][y] === 0) {
         if ( (x + y) % 2 === 0) {
-          this.drawPixel(x,y,"rgba(10,30,10,0.5)", this.unit);
+          this.drawPixel(baseOffset, x, y, "rgba(10,30,10,0.5)", this.unit);
         }
         if ((x + y) % 2 === 1) { //chess table pattern
-          this.drawPixel(x,y,"rgba(10,26,10,0.5)", this.unit);
+          this.drawPixel(baseOffset, x, y, "rgba(10,26,10,0.5)", this.unit);
         }
       }
-
     }
   }
+
+  cxt.font = fontSize + "px Operator Mono SSm A";
+  cxt.fillStyle = "white";
+  cxt.fillText(scoreText, this.canvas.width/10*2, fontSize/4*5);
+  cxt.fillText(difficulty, this.canvas.width/10*7, fontSize/4*5);
+
+};
+
+Game.prototype.outPutText = function() {
+
 };
 
 Game.prototype.generateFood = function() {
@@ -312,17 +328,21 @@ Game.prototype.generateFood = function() {
   this.map[this.fx][this.fy] = 9; // put food on the map
 };
 
-Game.prototype.drawCircle = function(posX, posY, color, size, offset) {
+Game.prototype.drawCircle = function(posy, posY, color, size, offset) {
   if (typeof offset === 'undefined' || !offset) var offset = 0;
   this.cxt.fillStyle = color;
   this.cxt.beginPath();
-  this.cxt.arc(posX * size + size/2 + offset, posY * size + size/2 + offset,  size/2 - 2 * offset, 0, Math.PI*2, true);
+  this.cxt.arc(posy * size + size/2 + offset, posY * size + size/2 + offset,  size/2 - 2 * offset, 0, Math.PI*2, true);
   this.cxt.closePath();
   this.cxt.fill();
 };
 
-Game.prototype.drawPixel = function(posX, posY, color, size, offset) {
-  if (typeof offset === 'undefined' || !offset) var offset = 0;
+Game.prototype.drawPixel = function(offsetBase, posy, posY, color, size, offsetRect) {
+  if (typeof offsetRect === 'undefined' || !offsetRect) var offsetRect = 0;
+  let startx = offsetBase.x;
+  let starty = offsetBase.y;
+  let x = posy * size + offsetRect + startx;
+  let y = posY * size + offsetRect + starty;
   this.cxt.fillStyle = color;
-  this.cxt.fillRect (posX * size + offset, posY * size + offset, size - 2 * offset, size - 2 * offset);
+  this.cxt.fillRect (x, y, size - 2 * offsetRect, size - 2 * offsetRect);
 };
