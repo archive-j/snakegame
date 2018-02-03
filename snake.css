@@ -60,11 +60,13 @@ a.animated-button:link:after, a.animated-button:visited:after {
 	z-index: -1;
 	transition: all 0.45s ease 0s;
 }
-a.animated-button:link:hover, a.animated-button:visited:hover {
+
+a.animated-button:link:focus, a.animated-button:visited:focus {
 	color: #000;
 	text-shadow: none;
 }
-a.animated-button:link:hover:after, a.animated-button:visited:hover:after {
+
+a.animated-button:link:focus:after, a.animated-button:visited:focus:after {
 	height: 450%;
 }
 a.animated-button:link, a.animated-button:visited {
@@ -87,43 +89,12 @@ a.animated-button:link, a.animated-button:visited {
 
 /* Victoria Buttons */
 
-a.animated-button.victoria-one {
-	border: 2px solid #bfd583;
-}
-a.animated-button.victoria-one:after {
-	background: #bfd583;
-	transform: translateX(-50%) translateY(-50%) rotate(-25deg);
-}
 a.animated-button.victoria-two {
 	border: 2px solid #bfd583;
 }
 a.animated-button.victoria-two:after {
 	background: #bfd583;
 	transform: translateX(-50%) translateY(-50%) rotate(25deg);
-}
-a.animated-button.victoria-three {
-	border: 2px solid #bfd583;
-}
-a.animated-button.victoria-three:after {
-	background: #bfd583;
-	opacity: .5;
-	transform: translateX(-50%) translateY(-50%);
-}
-a.animated-button.victoria-three:hover:after {
-	height: 140%;
-	opacity: 1;
-}
-a.animated-button.victoria-four {
-	border: 2px solid #bfd583;
-}
-a.animated-button.victoria-four:after {
-	color: #bfd583;
-	opacity: .5;
-	transform: translateY(-50%) translateX(-50%) rotate(90deg);
-}
-a.animated-button.victoria-four:hover:after {
-	opacity: 1;
-	height: 600% !important;
 }
 
 

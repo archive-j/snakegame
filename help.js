@@ -9,18 +9,7 @@ Array.prototype.removeElement = function(element) {
 function getRandomInt (max)  {
   return Math.floor (Math.random() * Math.floor (max));
 }
-//
-// function setVisibility(element, show) {
-//   if (show) {
-//     element.style.display = "block"; //visible
-//     element.visible = true;
-//   } else {
-//
-//   element.style.display = "none"; //hidden
-//     element.visible = false;
-//   }
-// }
-
+ 
 function setVisibility(...args) {
   var show = args[args.length-1];
   //Get elements and drop show value

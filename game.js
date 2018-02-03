@@ -1,13 +1,14 @@
-//SYMBOL
 
 function Game({ gameStartData, canvas, snakeLength, controlKeys, interFace, onGameEndAction }) {
+
   this.gameOver = false;
   this.ctrlFdbElement = document.getElementsByClassName('ctrl');
   //Save to the local storage
   this.debugDiv = interFace[0];
   this.scoreDiv = interFace[1];
-  this.ctrl = controlKeys;
+  this.controlKeys = controlKeys;
   this.snkLength = snakeLength;
+  //CALL BACK IF GAME ENDED
   this.onGameEndAction = onGameEndAction;
 
   this.playerName = gameStartData.name;
@@ -35,9 +36,29 @@ function Game({ gameStartData, canvas, snakeLength, controlKeys, interFace, onGa
   // map 0 empty 1 snake trail 2 snake head 9 food
   this.map = new Array(this.sizeX).fill().map(()=>new Array(this.sizeY).fill(0)); // empty map
   this.mapX = this.sizeX + "x" + this.sizeY;
+  this.generateFood();
 
   this.ctrlQueue = [];
   this.ctrlQueValid = [];
+
+
+  this.gamepadCtrl = new GamepadCTRL({
+    onAxisChange: (directionCommand) => { this.onKeyChange(directionCommand); }
+  });
+  //Start monitoring
+//  this.gamepadCtrl.update();
+
+  this.keyBoardCtrl = new keyboardCTRL({
+    controlKeys : this.controlKeys,
+    onKeyChange: (directionCommand) => { this.onKeyChange(directionCommand); }
+  });
+
+};
+
+Game.prototype.onKeyChange = function(directionCommand) {
+  this.ctrlQueue = directionCommand;
+  console.log(this.ctrlQueue);
+  this.validateDir(this.ctrlQueue);
 };
 
 Game.prototype.pauseGame = function() {
@@ -74,67 +95,6 @@ Game.prototype.clearBoard = function() {
     this.cxt.clearRect (0, 0, this.canvas.width, this.canvas.height);
 };
 
-Game.prototype.keyUpFunc = function(evt) {
-  switch (evt.keyCode) {
-    case this.ctrl[1]:
-      if (this.ctrlQueue.includes("LEFT")) {
-        this.ctrlQueue.removeElement("LEFT");
-        setPressed(this.ctrlFdbElement[1], false);
-      }
-      break;
-    case this.ctrl[0]:
-      if (this.ctrlQueue.includes("UP")) {
-        this.ctrlQueue.removeElement("UP");
-        setPressed(this.ctrlFdbElement[0], false);
-      }
-      break;
-    case this.ctrl[3]:
-      if (this.ctrlQueue.includes("RIGHT")) {
-        this.ctrlQueue.removeElement("RIGHT");
-        setPressed(this.ctrlFdbElement[3], false);
-      }
-      break;
-    case this.ctrl[2]:
-      if (this.ctrlQueue.includes("DOWN")) {
-        this.ctrlQueue.removeElement("DOWN");
-        setPressed(this.ctrlFdbElement[2], false);
-      }
-      break;
-  }
-  //Check if snake can move this direction
-  this.validateDir();
-};
-
-Game.prototype.keyDownFunc = function(evt) {
-  switch (evt.keyCode) {
-    case this.ctrl[0]:
-      if (!this.ctrlQueue.includes("UP")) {
-        this.ctrlQueue.push("UP");
-        //console.log("this.ctrlFdbElement[0]",this.ctrlFdbElement[0]);
-        setPressed(this.ctrlFdbElement[0], true);
-      }
-      break;
-    case this.ctrl[1]:
-      if (!this.ctrlQueue.includes("LEFT")) {
-        this.ctrlQueue.push("LEFT");
-        setPressed(this.ctrlFdbElement[1], true);
-      }
-      break;
-    case this.ctrl[2]:
-      if (!this.ctrlQueue.includes("DOWN")) {
-        this.ctrlQueue.push("DOWN");
-        setPressed(this.ctrlFdbElement[2], true);
-      }
-      break;
-    case this.ctrl[3]:
-      if (!this.ctrlQueue.includes("RIGHT")) {
-        this.ctrlQueue.push("RIGHT");
-        setPressed(this.ctrlFdbElement[3], true);
-      }
-      break;
-    }
-    this.validateDir();
-};
 
 Game.prototype.getDirVector = function(dir) {
   switch (dir) {
@@ -170,18 +130,19 @@ Game.prototype.getCurrentDirinString = function() {
   }
 };
 
-Game.prototype.validateDir = function() {
-  // check if the snake can go this direction and set the last pusded btn to next direction
+Game.prototype.validateDir = function(directionCommand) {
+  // check if the snake can go this direction and makes a
   this.ctrlQueValid = [];
-  for (var i = 0; i < this.ctrlQueue.length; i++) {
-    this.ctrlQueValid[i] = this.ctrlQueue[i];
-  }
-  for (var i = 0; i < this.ctrlQueue.length; i++) {
-    var vector = this.getDirVector(this.ctrlQueue[i]);
-    if ((this.vx === (-1*vector.x) && this.vy === 0) || (this.vy === (-1*vector.y) && this.vx === 0)) {
-      this.ctrlQueValid.removeElement(this.ctrlQueue[i]);
+
+    for (var i = 0; i < directionCommand.length; i++) {
+      this.ctrlQueValid[i] = directionCommand[i];
     }
-  }
+    for (var i = 0; i < directionCommand.length; i++) {
+      var vector = this.getDirVector(directionCommand[i]);
+      if ((this.vx === (-1*vector.x) && this.vy === 0) || (this.vy === (-1*vector.y) && this.vx === 0)) {
+        this.ctrlQueValid.removeElement(directionCommand[i]);
+      }
+    }
   if (this.ctrlQueValid.length > 0) {
     this.nextVx = this.getDirVector(this.ctrlQueValid[this.ctrlQueValid.length-1]).x;
     this.nextVy = this.getDirVector(this.ctrlQueValid[this.ctrlQueValid.length-1]).y;
@@ -190,6 +151,7 @@ Game.prototype.validateDir = function() {
 
 Game.prototype.moveSnake = function() {
   // read next position and increment position by speed
+  console.log("nextVx", this.nextVx, "nextVy", this.nextVy);
   this.vx = this.nextVx;
   this.vy = this.nextVy;
   this.getCurrentDirinString();

@@ -164,14 +164,7 @@ GameUI.prototype.newGameInit = function() {
     }); //WASD
 
     //console.log("this.game",this.game);
-    this.game.generateFood();
 
-    document.addEventListener('keydown', function(e) {
-      if(typeof(this.game) !== "undefined") this.game.keyDownFunc(e);
-    }.bind(this));
-    document.addEventListener('keyup', function(e) {
-      if(typeof(this.game) !== "undefined") this.game.keyUpFunc(e);
-    }.bind(this));
     this.stateMachine("showBoard");
   }
 };
