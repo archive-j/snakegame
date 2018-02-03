@@ -32,7 +32,7 @@ h2 {
 	margin-top: 60px;
 }
 /* Global Button Styles */
-a.animated-button:link, a.animated-button:visited {
+a.animated-button:link, a.animated-button:hover {
 	position: relative;
 	display: block;
 	margin: 30px auto 0;
@@ -61,12 +61,12 @@ a.animated-button:link:after, a.animated-button:visited:after {
 	transition: all 0.45s ease 0s;
 }
 
-a.animated-button:link:focus, a.animated-button:visited:focus {
+a.animated-button:link:hover, a.animated-button:visited:hover {
 	color: #000;
 	text-shadow: none;
 }
 
-a.animated-button:link:focus:after, a.animated-button:visited:focus:after {
+a.animated-button:link:hover:after, a.animated-button:visited:hover:after {
 	height: 450%;
 }
 a.animated-button:link, a.animated-button:visited {
